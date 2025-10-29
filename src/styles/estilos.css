@@ -1,0 +1,22 @@
+/* src/styles/estilos.css */
+:root {
+  --brand: #ff5e7e;
+}
+
+body {
+  background-color: #fff;
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  text-decoration: none;
+  color: var(--brand);
+}
+
+footer {
+  border-top: 1px solid #eee;
+  margin-top: 2rem;
+  padding-top: 1rem;
+}
