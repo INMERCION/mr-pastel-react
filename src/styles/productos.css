@@ -44,3 +44,62 @@
 .catalogo-page .card {
   flex: 1 1 auto;
 }
+
+
+/* ======== CENTRADO DE TARJETAS ======== */
+.product-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-radius: 0.75rem;
+  background-color: #fff;
+}
+
+/* Efecto hover suave */
+.product-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* Imagen centrada vertical y horizontalmente */
+.product-img-wrapper {
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: #fff;
+}
+
+.product-img {
+  width: 100%;
+  max-height: 200px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+/* Sutil zoom de imagen al hover */
+.product-card:hover .product-img {
+  transform: scale(1.05);
+}
+
+/* Ajuste responsivo */
+@media (max-width: 768px) {
+  .product-img-wrapper {
+    height: 180px;
+  }
+}
+
+
+/* Pequeñas mejoras globales */
+.product-card {
+  will-change: transform;
+}
+
+@media (max-width: 576px) {
+  .filtros input,
+  .filtros select {
+    width: 100%;
+  }
+}

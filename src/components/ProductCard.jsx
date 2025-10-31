@@ -1,36 +1,24 @@
-// ProductCard.jsx
+// ProductCard.jsx - tarjeta individual con centrado y efecto hover
 import React from "react";
 import { Card, Button } from "react-bootstrap";
+import "../styles/productos.css"; // 👈 reutilizamos aquí la clase de hover global
 
 export default function ProductCard({ producto, onAdd }) {
   if (!producto) return null;
 
   return (
-    <Card className="h-100 shadow-sm border-0 d-flex flex-column justify-content-between">
-      {/* Imagen */}
-      <div
-        style={{
-          height: "200px",
-          overflow: "hidden",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: "#fff",
-        }}
-      >
+    <Card className="h-100 shadow-sm border-0 product-card">
+      {/* Imagen centrada */}
+      <div className="product-img-wrapper">
         <Card.Img
           variant="top"
           src={producto.imagen}
           alt={producto.nombre}
-          style={{
-            maxHeight: "200px",
-            width: "100%",
-            objectFit: "cover",
-          }}
+          className="product-img"
         />
       </div>
 
-      {/* Cuerpo */}
+      {/*Cuerpo */}
       <Card.Body className="d-flex flex-column justify-content-between text-center">
         <div>
           <Card.Title className="fw-semibold mb-2 text-truncate">
