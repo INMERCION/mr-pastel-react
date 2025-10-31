@@ -4,6 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "react-bootstrap";
 import products from "../data/products";
 import ProductCard from "../components/ProductCard";
+import "../styles/home.css";
+
 
 export default function Home() {
   const navigate = useNavigate();

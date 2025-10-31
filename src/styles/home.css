@@ -1,0 +1,98 @@
+/* ======== HERO SECTION ======== */
+.hero-section {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  color: #fff;
+  overflow: hidden;
+}
+
+.hero-section .overlay {
+  background-color: rgba(0, 0, 0, 0.45);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.hero-section .container {
+  position: relative;
+  z-index: 2;
+}
+
+.hero-section h1 {
+  font-size: 2.4rem;
+  line-height: 1.2;
+  color: #ff6b6b;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+.hero-section p {
+  color: #f8f9fa;
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.hero-section .btn {
+  background-color: #dc3545;
+  border: none;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.hero-section .btn:hover {
+  background-color: #c82333;
+  transform: translateY(-2px);
+}
+
+/* ======== PRODUCTOS DESTACADOS ======== */
+.productos-destacados {
+  background: linear-gradient(180deg, #fff 0%, #fdf2f2 100%);
+}
+
+.productos-destacados h2 {
+  font-size: 2rem;
+  color: #dc3545;
+  font-weight: 700;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* ======== PRODUCTO CARD (ajustes visuales) ======== */
+.productos-destacados .card {
+  border: none;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.productos-destacados .card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+/* ======== BOTÓN FINAL ======== */
+.productos-destacados .btn {
+  background-color: #dc3545;
+  border: none;
+  border-radius: 30px;
+  transition: background-color 0.3s ease;
+}
+
+.productos-destacados .btn:hover {
+  background-color: #c82333;
+}
+
+/* ======== RESPONSIVIDAD ======== */
+@media (max-width: 768px) {
+  .hero-section h1 {
+    font-size: 1.8rem;
+  }
+
+  .hero-section p {
+    font-size: 1rem;
+  }
+
+  .productos-destacados h2 {
+    font-size: 1.6rem;
+  }
+}
