@@ -1,0 +1,46 @@
+/* ======== PRODUCTOS ======== */
+.catalogo-page {
+  background-color: #fff;
+  min-height: 100vh;
+}
+
+.catalogo-page h2 {
+  color: #dc3545;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.filtros input,
+.filtros select {
+  max-width: 250px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  padding: 0.5rem 1rem;
+}
+
+.filtros input:focus,
+.filtros select:focus {
+  outline: none;
+  border-color: #dc3545;
+  box-shadow: 0 0 0 0.1rem rgba(220, 53, 69, 0.25);
+}
+
+
+/* Centrar contenido de la grilla */
+.catalogo-page .row > * {
+  display: flex;
+  justify-content: center;
+}
+
+/* Asegurar alturas uniformes */
+.catalogo-page .card {
+  flex: 1 1 auto;
+}

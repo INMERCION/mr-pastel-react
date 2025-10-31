@@ -14,8 +14,8 @@ export default function Login() {
     e.preventDefault();
     const ok = await signIn(form.email, form.pass);
     if (ok) {
-      // Redirigir según el rol
-      nav(user?.role === "admin" ? "/admin" : "/");
+      const stored = JSON.parse(localStorage.getItem("user"));
+      nav(stored.role === "admin" ? "/admin" : "/");
     } else {
       setError("Credenciales incorrectas");
     }
