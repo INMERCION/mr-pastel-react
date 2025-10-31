@@ -16,7 +16,7 @@ export default function Home() {
       <section
         className="hero-section d-flex align-items-center text-light text-center text-md-start"
         style={{
-          backgroundImage: "url('/images/brownie-banner.jpg')",
+          backgroundImage: "url('/images/2.jpg')",
           backgroundSize: "cover",
           backgroundPosition: "center",
           minHeight: "80vh",
