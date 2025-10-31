@@ -4,6 +4,8 @@ import { useContext } from 'react';
 import { Row, Col, Button, Image } from 'react-bootstrap';
 import products from '../data/products';
 import { CartContext } from '../context/CartContext';
+import "../styles/detalle.css";
+
 
 export default function ProductoDetalle() {
   const { id } = useParams();
