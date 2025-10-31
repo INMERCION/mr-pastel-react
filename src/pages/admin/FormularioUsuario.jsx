@@ -1,5 +1,5 @@
 // ProductosAdmin.jsx - placeholder de CRUD; listo para conectar a API.
-export default function ProductosAdmin() {
+export default function AgregarUsuariosAdmin() {
   return (
     <>
       <h1 className="mb-3">Productos (Admin)</h1>

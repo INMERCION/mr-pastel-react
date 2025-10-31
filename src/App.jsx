@@ -21,8 +21,6 @@ import UsuariosAdmin from './pages/admin/UsuariosAdmin';
 
 // Importa el protector
 import ProtectedRoute from "./components/ProtectedRoute";
-import AdminFormProducto from './pages/admin/AdminFormProducto';
-import AdminFormUsuario from './pages/admin/AdminFormUsuario';
 
 export default function App() {
   return (
@@ -54,9 +52,6 @@ export default function App() {
             <Route index element={<AdminHome />} />
             <Route path="productos" element={<ProductosAdmin />} />
             <Route path="usuarios" element={<UsuariosAdmin />} />
-            <Route path="usuarios/editar/:id" element={<UsuariosAdmin />} />
-            <Route path="usuarios/nuevo" element={<AdminFormUsuario />} />
-            <Route path="productos/nuevo" element={<AdminFormProducto />} />
           </Route>
           
         </Routes>
