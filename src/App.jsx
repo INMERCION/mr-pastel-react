@@ -1,9 +1,9 @@
 // App.jsx - router principal y layout común (Navbar + Footer).
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-
+import AdminLayout from './components/admin/AdminLayout'
 import Home from './pages/Home';
 import Productos from './pages/Productos';
 import ProductoDetalle from './pages/ProductoDetalle';
@@ -25,9 +25,9 @@ import ProtectedRoute from "./components/ProtectedRoute";
 export default function App() {
   return (
     <BrowserRouter>
-      <Navbar />
-      <Container as="main" className="py-4">
-        <Routes>
+      
+      <Routes>
+        <Route element={<ClienteLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="/productos" element={<Productos />} />
           <Route path="/producto/:id" element={<ProductoDetalle />} />
@@ -37,6 +37,7 @@ export default function App() {
           <Route path="/contacto" element={<Contacto />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/nosotros" element={<Nosotros />} />
+        </Route>
 
 
           {/* 🔒 Solo accesible si el usuario es admin */}
@@ -44,29 +45,29 @@ export default function App() {
             path="/admin"
             element={
               <ProtectedRoute adminOnly>
-                <AdminHome />
+                <AdminLayout />
               </ProtectedRoute>
             }
-          />
-          <Route
-            path="/admin/productos"
-            element={
-              <ProtectedRoute adminOnly>
-                <ProductosAdmin />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/usuarios"
-            element={
-              <ProtectedRoute adminOnly>
-                <UsuariosAdmin />
-              </ProtectedRoute>
-            }
-          />
+          >
+            <Route index element={<AdminHome />} />
+            <Route path="productos" element={<ProductosAdmin />} />
+            <Route path="usuarios" element={<UsuariosAdmin />} />
+          </Route>
+          
         </Routes>
+    </BrowserRouter>
+  );
+}
+
+function ClienteLayout() {
+  return (
+    <>
+      <Navbar />
+      <Container as="main" className="py-4">
+        {/* El Outlet renderiza la página específica (Home, Productos, etc.) */}
+        <Outlet />
       </Container>
       <Footer />
-    </BrowserRouter>
+    </>
   );
 }
