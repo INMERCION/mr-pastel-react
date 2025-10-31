@@ -3,6 +3,8 @@ import products from '../data/products';
 import ProductGrid from '../components/ProductGrid';
 import { useContext } from 'react';
 import { CartContext } from '../context/CartContext';
+import "../styles/productos.css";
+
 
 export default function Productos() {
   const { addItem } = useContext(CartContext);
