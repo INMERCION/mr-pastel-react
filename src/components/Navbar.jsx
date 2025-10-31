@@ -1,11 +1,14 @@
 import { NavLink } from "react-router-dom";
-import { Navbar as BSNavbar, Nav, Container, Badge } from "react-bootstrap";
+import { Navbar as BSNavbar, Nav, Container, NavDropdown, Badge } from "react-bootstrap";
 import { FaShoppingCart } from "react-icons/fa";
 import { useContext } from "react";
 import { CartContext } from "../context/CartContext";
+import { useAuth } from "../context/AuthContext";
 
 export default function Navbar() {
   const { items } = useContext(CartContext);
+  const { user, signOut, isAdmin } = useAuth();
+
   const totalItems = items?.reduce((acc, it) => acc + it.qty, 0) || 0;
 
   return (
@@ -44,7 +47,7 @@ export default function Navbar() {
           </Nav>
         </BSNavbar.Collapse>
 
-        {/* Icono carrito + login/registro */}
+        {/* Icono carrito + usuario o login */}
         <Nav className="align-items-center ms-auto">
           <Nav.Link as={NavLink} to="/carrito" className="position-relative me-3">
             <FaShoppingCart size={20} />
@@ -58,12 +61,29 @@ export default function Navbar() {
               </Badge>
             )}
           </Nav.Link>
-          <Nav.Link as={NavLink} to="/login">
-            Login
-          </Nav.Link>
-          <Nav.Link as={NavLink} to="/registro">
-            Registro
-          </Nav.Link>
+
+          {user ? (
+            <NavDropdown title={user.name} align="end">
+              {isAdmin && (
+                <NavDropdown.Item as={NavLink} to="/admin">
+                  Panel Admin
+                </NavDropdown.Item>
+              )}
+              <NavDropdown.Divider />
+              <NavDropdown.Item onClick={signOut}>
+                Cerrar sesión
+              </NavDropdown.Item>
+            </NavDropdown>
+          ) : (
+            <>
+              <Nav.Link as={NavLink} to="/login">
+                Login
+              </Nav.Link>
+              <Nav.Link as={NavLink} to="/registro">
+                Registro
+              </Nav.Link>
+            </>
+          )}
         </Nav>
       </Container>
     </BSNavbar>
