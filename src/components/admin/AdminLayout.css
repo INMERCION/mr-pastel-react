@@ -1,4 +1,4 @@
-/* src/components/admin/AdminLayout.css */
+/* --- ESTILOS BASE (DESKTOP) --- */
 .admin-layout {
   display: flex;
   min-height: 100vh;
@@ -6,41 +6,128 @@
 
 .admin-sidebar {
   width: 250px;
-  background-color: #ffffff; /* Un color oscuro para el sidebar */
+  background-color: #ffffff;
   color: rgb(88, 34, 34);
   display: flex;
   flex-direction: column;
   padding: 1rem;
+  transition: width 0.3s ease;
+  overflow-x: hidden;
+  white-space: nowrap;
+  /* Z-index bajo para que el botón de toggle esté encima */
+  z-index: 1000; 
 }
 
-.admin-sidebar .sidebar-header {
-  padding-bottom: 1rem;
-  margin-bottom: 1rem;
-  border-bottom: 1px solid #ca620d;
-}
+/* ... (Todos tus estilos de .sidebar-header, .nav-link, .accordion, etc. van aquí sin cambios) ... */
 
-.admin-sidebar .nav-link {
-  color: #1504ff;
-  padding: 0.75rem 1rem;
-  border-radius: 0.25rem;
-  display: flex;
+/* --- Lógica de colapso DESKTOP --- */
+.admin-layout.collapsed .admin-sidebar {
+  width: 90px;
   align-items: center;
-  gap: 0.75rem; /* Espacio entre ícono y texto */
 }
 
-.admin-sidebar .nav-link:hover {
-  color: white;
-  background-color: #0080ff;
+/* Ocultar texto en modo colapsado (desktop) */
+.admin-layout.collapsed .sidebar-header h3,
+.admin-layout.collapsed .accordion-header span, /* Oculta texto de acordeón */
+.admin-layout.collapsed .nav-link span { /* Oculta texto de NavLink */
+  display: none;
 }
 
-.admin-sidebar .nav-link.active {
-  color: white;
-  font-weight: bold;
-  background-color: #0d6efd; /* Color de activo */
-}
+/* Necesitamos envolver el texto en <span> para que esto funcione */
+/* Ej: <FaTachometerAlt /> { !isCollapsed && <span> Dashboard</span> } */
+/* Si no quieres hacer eso, tu lógica JS de { !isCollapsed && 'Texto' } es suficiente */
+
 
 .admin-content {
-  flex-grow: 1; /* Ocupa el resto del espacio */
+  flex-grow: 1;
   padding: 2rem;
-  background-color: #f8f9fa; /* Fondo claro para el contenido */
+  background-color: #f8f9fa;
+  transition: margin-left 0.3s ease;
+}
+
+/* Botón de Toggle (Desktop) */
+.admin-toggle-btn {
+  position: absolute;
+  top: 15px;
+  /* Posicionado relativo al borde del sidebar */
+  left: 230px; /* 250px (ancho) - 20px (aprox) */
+  z-index: 1001; /* Encima del sidebar */
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 50%;
+  transition: left 0.3s ease;
+}
+
+.admin-layout.collapsed .admin-toggle-btn {
+  left: 60px; /* 80px (ancho colapsado) - 20px (aprox) */
+}
+
+/* Backdrop (Oculto en Desktop) */
+.sidebar-backdrop {
+  display: none;
+}
+
+
+/* --- ESTILOS RESPONSIVE (MÓVIL) --- */
+/* Aplicar cuando la pantalla sea más pequeña que 992px */
+@media (max-width: 991.98px) {
+  
+  /* El contenido ocupa todo y dejamos espacio para el botón de toggle (header) */
+  .admin-content {
+    margin-left: 0;
+    padding-top: 5rem; /* Espacio para el botón de menú */
+  }
+
+  /* El Sidebar ahora es un menú "off-canvas" */
+  .admin-sidebar {
+    position: fixed; /* Flota sobre el contenido */
+    top: 0;
+    left: 0;
+    height: 100vh; /* Alto total */
+    z-index: 1050; /* Encima de todo */
+    width: 280px; /* Ancho fijo para móvil */
+    
+    /* Oculto por defecto (cuando está 'collapsed') */
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+    
+    /* En móvil, nunca colapsamos a 80px, así que forzamos esto */
+    align-items: normal !important; 
+  }
+
+  /* Estado ABIERTO en Móvil (cuando NO tiene .collapsed) */
+  .admin-layout:not(.collapsed) .admin-sidebar {
+    transform: translateX(0); /* Mostrar sidebar */
+    box-shadow: 0 0 15px rgba(0,0,0,0.2); /* Sombra bonita */
+  }
+  
+  /* El botón de Toggle ahora es fijo en la esquina */
+  .admin-toggle-btn {
+    position: fixed; /* Fijo en la pantalla */
+    top: 15px;
+    left: 15px;
+    z-index: 1051; /* Encima del sidebar */
+    transition: none; /* Sin transición de 'left' */
+  }
+  /* No necesitamos la regla .collapsed para el botón en móvil */
+  .admin-layout.collapsed .admin-toggle-btn {
+    left: 15px;
+  }
+
+  /* El Backdrop (overlay) */
+  .sidebar-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.5);
+    z-index: 1040; /* Detrás del sidebar, delante del contenido */
+    display: none; /* Oculto por defecto */
+  }
+
+  /* Mostrar Backdrop solo si el menú está abierto */
+  .admin-layout:not(.collapsed) .sidebar-backdrop {
+    display: block;
+  }
 }
