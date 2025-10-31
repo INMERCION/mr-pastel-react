@@ -38,6 +38,7 @@ export default function App() {
           <Route path="/blog" element={<Blog />} />
           <Route path="/nosotros" element={<Nosotros />} />
 
+
           {/* 🔒 Solo accesible si el usuario es admin */}
           <Route
             path="/admin"

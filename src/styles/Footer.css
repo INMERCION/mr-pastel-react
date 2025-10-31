@@ -1,0 +1,28 @@
+
+/* Estilo específico para el footer */
+
+.footer {
+  background-color: #212529;
+}
+
+.footer-link {
+  color: #f8f9fa;
+  text-decoration: none;
+  display: inline-block;
+  margin-bottom: 0.4rem;
+  transition: color 0.3s;
+}
+
+.footer-link:hover {
+  color: #ffb3b3; /* tono pastel rosado */
+}
+
+.footer-icon {
+  color: #f8f9fa;
+  transition: color 0.3s, transform 0.2s;
+}
+
+.footer-icon:hover {
+  color: #ffb3b3;
+  transform: scale(1.15);
+}
