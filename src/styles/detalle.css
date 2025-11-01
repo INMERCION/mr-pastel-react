@@ -36,3 +36,18 @@
 .detalle-info .btn:hover {
   background-color: #c82333;
 }
+
+
+/* ======== BOTONES DE CANTIDAD ======== */
+.detalle-page .btn.rounded-circle {
+  width: 45px;
+  height: 45px;
+  font-size: 1.3rem;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.detalle-page span.fs-4 {
+  min-width: 40px;
+  text-align: center;
+}

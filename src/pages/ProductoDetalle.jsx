@@ -1,117 +1,101 @@
-// ProductoDetalle.jsx - muestra detalle individual, controla cantidad y agrega al carrito.
+// ProductoDetalle.jsx - Detalle de producto con control de cantidad dinámico
 import React, { useContext, useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Row, Col, Button, Image, Form } from "react-bootstrap";
-import products from "../data/products";
+import { Row, Col, Button, Image } from "react-bootstrap";
 import { CartContext } from "../context/CartContext";
+import products from "../data/products";
 import "../styles/detalle.css";
 
 export default function ProductoDetalle() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { addItem } = useContext(CartContext);
 
-  //Buscar producto por ID
+
+  const { items, updateItemQuantity } = useContext(CartContext);
   const producto = products.find((p) => String(p.id) === String(id));
 
-  //Si no existe el producto → redirigir al catálogo
-  useEffect(() => {
-    if (!producto) {
-      const timer = setTimeout(() => navigate("/productos"), 2000);
-      return () => clearTimeout(timer);
-    }
-  }, [producto, navigate]);
-
-  //Control de cantidad
   const [cantidad, setCantidad] = useState(1);
-  const aumentar = () => setCantidad((prev) => prev + 1);
-  const disminuir = () => setCantidad((prev) => (prev > 1 ? prev - 1 : 1));
 
-  // 🛒 Manejar acción de agregar al carrito
-  const handleAgregar = () => {
-    addItem({ ...producto, cantidad });
-  };
+  //Si el producto ya está en el carrito, reflejar su cantidad actual
+  useEffect(() => {
+    const existente = items.find((item) => item.id === producto?.id);
+    if (existente) setCantidad(existente.cantidad);
+  }, [items, producto]);
 
-  // Si no hay producto válido
-  if (!producto) {
+  if (!producto)
     return (
-      <div className="text-center py-5">
-        <h4 className="text-muted">Producto no encontrado. Redirigiendo...</h4>
+      <div className="text-center mt-5">
+        <h3 className="text-danger">Producto no encontrado</h3>
+        <Button variant="secondary" onClick={() => navigate("/productos")}>
+          Volver al catálogo
+        </Button>
       </div>
     );
-  }
+
+  // Incrementar o decrementar cantidad
+  const aumentar = () => {
+    const nuevaCantidad = cantidad + 1;
+    setCantidad(nuevaCantidad);
+    updateItemQuantity(producto.id, nuevaCantidad, producto);
+  };
+
+  const disminuir = () => {
+    if (cantidad > 1) {
+      const nuevaCantidad = cantidad - 1;
+      setCantidad(nuevaCantidad);
+      updateItemQuantity(producto.id, nuevaCantidad, producto);
+    }
+  };
 
   return (
     <div className="detalle-page container py-5">
-      <Row className="g-5 align-items-center detalle-card p-3">
-        {/* 🖼️ Imagen del producto */}
-        <Col md={6} className="text-center">
+      <Row className="g-4 align-items-center">
+        <Col md={6}>
           <Image
             src={producto.imagen}
             alt={producto.nombre}
             fluid
-            className="rounded shadow-sm"
-            style={{
-              maxHeight: "400px",
-              objectFit: "contain",
-            }}
+            className="rounded-3 shadow-sm"
           />
         </Col>
 
-        {/* 📋 Información del producto */}
-        <Col md={6} className="detalle-info">
-          <h2 className="mb-3">{producto.nombre}</h2>
+        <Col md={6}>
+          <h1 className="fw-bold text-danger mb-3">{producto.nombre}</h1>
+          <p className="text-muted mb-4">{producto.descripcion}</p>
 
-          {producto.descripcion ? (
-            <p className="text-muted mb-4">{producto.descripcion}</p>
-          ) : (
-            <p className="text-muted mb-4">
-              Producto artesanal elaborado con los mejores ingredientes.
-            </p>
-          )}
-
-          <h3 className="text-danger mb-4">
+          <h3 className="mb-3 fw-semibold">
             ${producto.precio.toLocaleString("es-CL")}
           </h3>
 
-          {/* 🔢 Selector de cantidad */}
-          <div className="d-flex align-items-center mb-4">
+          {/* Control de cantidad */}
+          <div className="d-flex align-items-center gap-3 mb-4">
             <Button
               variant="outline-danger"
-              size="sm"
+              className="rounded-circle"
               onClick={disminuir}
-              className="fw-bold"
             >
-              −
+              –
             </Button>
-            <Form.Control
-              type="number"
-              value={cantidad}
-              onChange={(e) => {
-                const val = parseInt(e.target.value) || 1;
-                setCantidad(val > 0 ? val : 1);
-              }}
-              className="mx-2 text-center"
-              style={{ width: "70px" }}
-            />
+            <span className="fs-4 fw-semibold">{cantidad}</span>
             <Button
               variant="outline-danger"
-              size="sm"
+              className="rounded-circle"
               onClick={aumentar}
-              className="fw-bold"
             >
               +
             </Button>
           </div>
 
-          {/* 🛒 Botón agregar */}
+          <p className="text-muted">
+            La cantidad se actualiza automáticamente en tu carrito.
+          </p>
+
           <Button
-            variant="danger"
-            size="lg"
-            className="rounded-pill fw-semibold"
-            onClick={handleAgregar}
+            variant="secondary"
+            className="rounded-pill"
+            onClick={() => navigate("/productos")}
           >
-            Agregar al carrito
+            ← Seguir comprando
           </Button>
         </Col>
       </Row>

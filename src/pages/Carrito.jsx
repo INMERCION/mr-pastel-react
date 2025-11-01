@@ -24,8 +24,8 @@ export default function Carrito() {
           {items.map((i) => (
             <tr key={i.id}>
               <td>{i.nombre}</td>
-              <td>{i.qty}</td>
-              <td>${(i.precio * i.qty).toLocaleString('es-CL')}</td>
+              <td>{i.cantidad}</td>
+              <td>${(i.precio * i.cantidad).toLocaleString('es-CL')}</td>
               <td>
                 <Button variant="outline-danger" size="sm" onClick={() => removeItem(i.id)}>
                   Quitar
