@@ -1,4 +1,4 @@
-// ProductGrid.jsx
+// ProductGrid.jsx - grilla responsiva de productos
 import React from "react";
 import { Row, Col } from "react-bootstrap";
 import ProductCard from "./ProductCard";
@@ -19,6 +19,7 @@ export default function ProductGrid({ productos = [], onAdd }) {
           key={p.id}
           className="d-flex justify-content-center align-items-stretch"
         >
+          {/* 🔹 Centrado de tarjeta */}
           <div style={{ width: "100%", maxWidth: "260px" }}>
             <ProductCard producto={p} onAdd={onAdd} />
           </div>

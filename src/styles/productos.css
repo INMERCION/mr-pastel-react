@@ -64,6 +64,7 @@
 
 
 /* Imagen centrada vertical y horizontalmente */
+/* ======== IMAGEN CLICKEABLE ======== */
 .product-img-wrapper {
   height: 200px;
   width: 100%;
@@ -73,22 +74,20 @@
   overflow: hidden;
   background-color: #fff;
   position: relative;
+  cursor: pointer; /* 👈 hace visible el clickeo */
+  transition: transform 0.25s ease;
 }
 
 /* Imagen perfectamente centrada y contenida */
 .product-img {
-  max-height: 100%;
-  max-width: 100%;
-  width: auto;
-  height: auto;
-  object-fit: contain; /* cambia de cover a contain */
-  display: block;
-  margin: 0 auto;
+  width: 100%;
+  max-height: 200px;
+  object-fit: contain;
   transition: transform 0.3s ease;
 }
 
 /* Efecto zoom leve */
-.product-card:hover .product-img {
+.product-img-wrapper:hover .product-img {
   transform: scale(1.05);
 }
 

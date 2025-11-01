@@ -1,4 +1,4 @@
-// ProductCard.jsx - tarjeta individual con centrado, hover y navegación por imagen/título
+// ProductCard.jsx - imagen clickeable para ir a detalle del producto
 import React from "react";
 import { Card, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
@@ -8,6 +8,7 @@ export default function ProductCard({ producto, onAdd }) {
   const navigate = useNavigate();
   if (!producto) return null;
 
+  // 🧭 Navegación al detalle del producto
   const irADetalle = () => navigate(`/producto/${producto.id}`);
 
   return (
@@ -26,19 +27,17 @@ export default function ProductCard({ producto, onAdd }) {
         />
       </div>
 
-      {/* 📋 Cuerpo */}
+      {/* 📋 Cuerpo de la tarjeta */}
       <Card.Body className="d-flex flex-column justify-content-between text-center">
-        <div>
-          {/* 🏷️ Nombre clickeable */}
-          <Card.Title
-            className="fw-semibold mb-2 text-truncate"
-            style={{ cursor: "pointer" }}
-            onClick={irADetalle}
-          >
-            {producto.nombre}
-          </Card.Title>
-        </div>
+        {/* 🏷️ Nombre del producto */}
+        <Card.Title
+          className="fw-semibold mb-2 text-truncate"
+          style={{ cursor: "default" }}
+        >
+          {producto.nombre}
+        </Card.Title>
 
+        {/* 💰 Precio y botón agregar */}
         <div className="d-flex justify-content-between align-items-center mt-auto">
           <strong className="text-danger">
             ${producto.precio.toLocaleString("es-CL")}
@@ -47,7 +46,10 @@ export default function ProductCard({ producto, onAdd }) {
             variant="danger"
             size="sm"
             className="rounded-pill fw-semibold"
-            onClick={() => onAdd && onAdd(producto)} // ✅ Manejo seguro
+            onClick={(e) => {
+              e.stopPropagation(); // 🚫 Evita que el clic redirija
+              onAdd && onAdd(producto);
+            }}
           >
             Agregar
           </Button>
