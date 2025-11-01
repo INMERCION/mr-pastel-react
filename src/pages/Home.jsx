@@ -1,19 +1,20 @@
 // Home.jsx - portada con Hero, destacados y CTA a Productos.
-import React from "react";
+import React, { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button, Row, Col } from "react-bootstrap";
 import products from "../data/products";
 import ProductCard from "../components/ProductCard";
+import { CartContext } from "../context/CartContext"; 
 import "../styles/home.css";
-import "../styles/productos.css"; // 👈 Importamos para aplicar mismo centrado y hover
+import "../styles/productos.css";
 
 export default function Home() {
   const navigate = useNavigate();
-  const destacados = products.slice(0, 6); // 4–6 productos destacados
+  const { addItem } = useContext(CartContext); 
+  const destacados = products.slice(0, 6); 
 
   return (
     <div className="home-page">
-
       {/* 🧁 HERO SECTION */}
       <section
         className="hero-section d-flex align-items-center text-light text-center text-md-start"
@@ -43,7 +44,8 @@ export default function Home() {
               ¡Celebramos 50 años de dulzura!
             </h1>
             <p className="fs-5 mb-4 text-light">
-              Ganadores del Récord Guinness 1995 por la torta más grande del mundo.
+              Ganadores del Récord Guinness 1995 por la torta más grande del
+              mundo.
             </p>
             <Button
               as={Link}
@@ -73,7 +75,7 @@ export default function Home() {
               >
                 {/* 🔹 Wrapper para centrar tarjetas más pequeñas */}
                 <div style={{ width: "100%", maxWidth: "260px" }}>
-                  <ProductCard producto={producto} />
+                  <ProductCard producto={producto} onAdd={addItem} /> {/* ✅ Fix */}
                 </div>
               </Col>
             ))}

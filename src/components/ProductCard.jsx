@@ -1,15 +1,23 @@
-// ProductCard.jsx - tarjeta individual con centrado y efecto hover
+// ProductCard.jsx - tarjeta individual con centrado, hover y navegación por imagen/título
 import React from "react";
 import { Card, Button } from "react-bootstrap";
-import "../styles/productos.css"; // 👈 reutilizamos aquí la clase de hover global
+import { useNavigate } from "react-router-dom";
+import "../styles/productos.css";
 
 export default function ProductCard({ producto, onAdd }) {
+  const navigate = useNavigate();
   if (!producto) return null;
+
+  const irADetalle = () => navigate(`/producto/${producto.id}`);
 
   return (
     <Card className="h-100 shadow-sm border-0 product-card">
-      {/* Imagen centrada */}
-      <div className="product-img-wrapper">
+      {/* 🖼️ Imagen clickeable */}
+      <div
+        className="product-img-wrapper"
+        onClick={irADetalle}
+        style={{ cursor: "pointer" }}
+      >
         <Card.Img
           variant="top"
           src={producto.imagen}
@@ -18,10 +26,15 @@ export default function ProductCard({ producto, onAdd }) {
         />
       </div>
 
-      {/*Cuerpo */}
+      {/* 📋 Cuerpo */}
       <Card.Body className="d-flex flex-column justify-content-between text-center">
         <div>
-          <Card.Title className="fw-semibold mb-2 text-truncate">
+          {/* 🏷️ Nombre clickeable */}
+          <Card.Title
+            className="fw-semibold mb-2 text-truncate"
+            style={{ cursor: "pointer" }}
+            onClick={irADetalle}
+          >
             {producto.nombre}
           </Card.Title>
         </div>
@@ -34,7 +47,7 @@ export default function ProductCard({ producto, onAdd }) {
             variant="danger"
             size="sm"
             className="rounded-pill fw-semibold"
-            onClick={() => onAdd(producto)}
+            onClick={() => onAdd && onAdd(producto)} // ✅ Manejo seguro
           >
             Agregar
           </Button>
