@@ -1,5 +1,5 @@
 // Productos.jsx - Catálogo con búsqueda, filtro por categoría y paginación local
-import React, { useContext, useState, useMemo } from "react";
+import React, { useContext, useState, useMemo, useEffect } from "react";
 import products from "../data/products";
 import ProductGrid from "../components/ProductGrid";
 import { CartContext } from "../context/CartContext";
@@ -39,7 +39,7 @@ export default function Productos() {
   const productosPaginados = productosFiltrados.slice(inicio, fin);
 
   // 🔁 Reinicia a la primera página cuando cambian los filtros
-  React.useEffect(() => {
+  useEffect(() => {
     setPagina(1);
   }, [busqueda, categoria]);
 

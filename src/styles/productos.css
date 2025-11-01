@@ -44,3 +44,56 @@
 .catalogo-page .card {
   flex: 1 1 auto;
 }
+
+
+/* ======== CENTRADO DE TARJETAS ======== */
+.product-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-radius: 0.75rem;
+  background-color: #fff;
+}
+
+/* Efecto hover suave */
+.product-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+
+/* Imagen centrada vertical y horizontalmente */
+/* ======== IMAGEN CLICKEABLE ======== */
+.product-img-wrapper {
+  height: 200px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: #fff;
+  position: relative;
+  cursor: pointer; /* 👈 hace visible el clickeo */
+  transition: transform 0.25s ease;
+}
+
+/* Imagen perfectamente centrada y contenida */
+.product-img {
+  width: 100%;
+  max-height: 200px;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+/* Efecto zoom leve */
+.product-img-wrapper:hover .product-img {
+  transform: scale(1.05);
+}
+
+/* Ajuste responsivo */
+@media (max-width: 768px) {
+  .product-img-wrapper {
+    height: 180px;
+  }
+}

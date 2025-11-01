@@ -1,0 +1,46 @@
+/* src/components/admin/AdminLayout.css */
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.admin-sidebar {
+  width: 250px;
+  background-color: #ffffff; /* Un color oscuro para el sidebar */
+  color: rgb(88, 34, 34);
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+}
+
+.admin-sidebar .sidebar-header {
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #ca620d;
+}
+
+.admin-sidebar .nav-link {
+  color: #1504ff;
+  padding: 0.75rem 1rem;
+  border-radius: 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem; /* Espacio entre ícono y texto */
+}
+
+.admin-sidebar .nav-link:hover {
+  color: white;
+  background-color: #0080ff;
+}
+
+.admin-sidebar .nav-link.active {
+  color: white;
+  font-weight: bold;
+  background-color: #0d6efd; /* Color de activo */
+}
+
+.admin-content {
+  flex-grow: 1; /* Ocupa el resto del espacio */
+  padding: 2rem;
+  background-color: #f8f9fa; /* Fondo claro para el contenido */
+}

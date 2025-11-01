@@ -1,19 +1,20 @@
 // Home.jsx - portada con Hero, destacados y CTA a Productos.
-import React from "react";
+import React, { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Button } from "react-bootstrap";
+import { Button, Row, Col } from "react-bootstrap";
 import products from "../data/products";
 import ProductCard from "../components/ProductCard";
+import { CartContext } from "../context/CartContext"; 
 import "../styles/home.css";
-
+import "../styles/productos.css";
 
 export default function Home() {
   const navigate = useNavigate();
-  const destacados = products.slice(0, 6); // 4–6 productos destacados
+  const { addItem } = useContext(CartContext); 
+  const destacados = products.slice(0, 6); 
 
   return (
     <div className="home-page">
-
       {/* 🧁 HERO SECTION */}
       <section
         className="hero-section d-flex align-items-center text-light text-center text-md-start"
@@ -43,7 +44,8 @@ export default function Home() {
               ¡Celebramos 50 años de dulzura!
             </h1>
             <p className="fs-5 mb-4 text-light">
-              Ganadores del Récord Guinness 1995 por la torta más grande del mundo.
+              Ganadores del Récord Guinness 1995 por la torta más grande del
+              mundo.
             </p>
             <Button
               as={Link}
@@ -65,16 +67,19 @@ export default function Home() {
             Productos Destacados
           </h2>
 
-          <div className="row justify-content-center g-4">
+          <Row xs={1} sm={2} md={3} lg={4} className="g-4 justify-content-center">
             {destacados.map((producto) => (
-              <div
+              <Col
                 key={producto.id}
-                className="col-12 col-sm-6 col-md-4 col-lg-3 d-flex"
+                className="d-flex justify-content-center align-items-stretch"
               >
-                <ProductCard producto={producto} />
-              </div>
+                {/* 🔹 Wrapper para centrar tarjetas más pequeñas */}
+                <div style={{ width: "100%", maxWidth: "260px" }}>
+                  <ProductCard producto={producto} onAdd={addItem} /> {/* ✅ Fix */}
+                </div>
+              </Col>
             ))}
-          </div>
+          </Row>
 
           <div className="text-center mt-4">
             <Button
