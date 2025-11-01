@@ -1,46 +1,189 @@
-/* src/components/admin/AdminLayout.css */
+/* --- ESTILOS BASE (DESKTOP) --- */
+
 .admin-layout {
-  display: flex;
+  position: relative; /* Contexto para elementos posicionados */
   min-height: 100vh;
 }
 
+/* 1. SIDEBAR (AHORA FIJO) */
 .admin-sidebar {
-  width: 250px;
-  background-color: #ffffff; /* Un color oscuro para el sidebar */
+  position: fixed; /* Fijo a la izquierda, fuera del flujo */
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 250px; /* Ancho expandido */
+  background-color: #ffffff;
   color: rgb(88, 34, 34);
   display: flex;
   flex-direction: column;
   padding: 1rem;
+  transition: width 0.3s ease;
+  z-index: 1000;
+  overflow-x: hidden;
+  white-space: nowrap;
 }
 
+/* 2. CONTENIDO (CON MARGEN) */
+.admin-content {
+  background-color: #f8f9fa;
+  padding: 2rem;
+  min-height: 100vh;
+  /* Margen izquierdo = ancho del sidebar */
+  margin-left: 250px; 
+  transition: margin-left 0.3s ease;
+}
+
+/* --- ESTADO COLAPSADO (DESKTOP) --- */
+.admin-layout.collapsed .admin-sidebar {
+  width: 80px; /* Ancho colapsado */
+  align-items: center; /* Centrar iconos */
+}
+
+.admin-layout.collapsed .admin-content {
+  margin-left: 80px; /* Margen izquierdo = ancho colapsado */
+}
+
+/* --- Cabecera y Botón Toggle (Desktop) --- */
 .admin-sidebar .sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   padding-bottom: 1rem;
   margin-bottom: 1rem;
   border-bottom: 1px solid #ca620d;
+  width: 100%;
 }
 
+.admin-layout.collapsed .sidebar-header {
+  justify-content: center; /* Centra el botón cuando H3 desaparece */
+}
+
+.sidebar-toggle-btn-desktop {
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  color: #0d6efd;
+  padding: 0.25rem;
+  display: block; /* Visible en Desktop */
+}
+.sidebar-toggle-btn-desktop:hover {
+  background-color: #f1f1f1;
+}
+
+/* Botón de Móvil (Oculto en Desktop) */
+.admin-toggle-btn-mobile {
+  display: none;
+}
+
+/* --- Estilos de Enlaces y Accordion (Sin cambios) --- */
 .admin-sidebar .nav-link {
   color: #1504ff;
   padding: 0.75rem 1rem;
   border-radius: 0.25rem;
   display: flex;
   align-items: center;
-  gap: 0.75rem; /* Espacio entre ícono y texto */
+  gap: 0.75rem;
+  width: 100%;
 }
-
 .admin-sidebar .nav-link:hover {
   color: white;
   background-color: #0080ff;
 }
-
 .admin-sidebar .nav-link.active {
   color: white;
   font-weight: bold;
-  background-color: #0d6efd; /* Color de activo */
+  background-color: #0d6efd;
 }
 
-.admin-content {
-  flex-grow: 1; /* Ocupa el resto del espacio */
-  padding: 2rem;
-  background-color: #f8f9fa; /* Fondo claro para el contenido */
+.admin-layout.collapsed .nav-link {
+  justify-content: center;
+}
+
+.sidebar-accordion-item {
+  border: none !important;
+  background-color: transparent !important;
+}
+.admin-sidebar .accordion-header button {
+  background-color: transparent !important;
+  color: #1504ff !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0.75rem 1rem;
+  border-radius: 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+}
+.admin-sidebar .accordion-header button:hover {
+  color: white !important;
+  background-color: #0080ff !important;
+}
+.admin-sidebar .accordion-header button::after {
+  display: none;
+}
+.admin-layout.collapsed .accordion-header button {
+  justify-content: center;
+}
+.admin-sidebar .accordion-body {
+  padding: 0 0 0 1.5rem;
+}
+.admin-layout.collapsed .accordion-body {
+  display: none;
+}
+
+
+/* --- ESTILOS RESPONSIVE (MÓVIL) --- */
+@media (max-width: 991.98px) {
+
+  /* El Sidebar ahora es off-canvas */
+  .admin-sidebar {
+    width: 280px !important; /* Ancho fijo para móvil (ignora 80px) */
+    transform: translateX(-100%); /* Oculto por defecto */
+    transition: transform 0.3s ease-in-out;
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    align-items: normal !important; /* Anula el 'center' del colapsado */
+  }
+
+  /* Estado ABIERTO en Móvil (cuando NO tiene .collapsed) */
+  .admin-layout:not(.collapsed) .admin-sidebar {
+    transform: translateX(0); /* Mostrar sidebar */
+  }
+
+  /* El contenido ocupa todo el ancho */
+  .admin-content {
+    margin-left: 0;
+    padding-top: 5rem; /* Espacio para el botón de menú */
+  }
+
+  /* Ocultar botón de Desktop */
+  .sidebar-toggle-btn-desktop {
+    display: none;
+  }
+
+  /* Mostrar y posicionar botón de Móvil */
+  .admin-toggle-btn-mobile {
+    display: block;
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 1051; /* Encima de todo */
+  }
+
+  /* Backdrop (sombra) */
+  .sidebar-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.5);
+    z-index: 1040; /* Detrás del sidebar */
+    display: none;
+  }
+
+  /* Mostrar Backdrop solo si el menú está abierto */
+  .admin-layout:not(.collapsed) .sidebar-backdrop {
+    display: block;
+  }
 }

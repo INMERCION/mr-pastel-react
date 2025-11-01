@@ -1,20 +1,24 @@
-// src/pages/Login.jsx
 import { useState } from "react";
 import { Form, Button, Alert } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 export default function Login() {
-  const { signIn, user } = useAuth();
+  // 1. CORRECCIÓN ESLINT: Quitamos 'user' que no se usaba
+  const { signIn } = useAuth();
   const nav = useNavigate();
-  const [form, setForm] = useState({ email: "", pass: "" });
+  
+  // 2. CORRECIÓN LÓGICA: Cambiamos 'pass' a 'password' para que coincida con AuthContext
+  const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    const res = await signIn(form.email, form.pass);
+    
+    // 3. CORRECIÓN LÓGICA: Enviamos form.password
+    const res = await signIn(form.email, form.password);
+    
     if (res) {
-      // signIn ahora devuelve el usuario sanitizado
       nav(res.role === "admin" ? "/admin" : "/");
     } else {
       setError("Credenciales incorrectas");
@@ -41,20 +45,15 @@ export default function Login() {
           <Form.Control
             type="password"
             required
-            value={form.pass}
-            onChange={(e) => setForm({ ...form, pass: e.target.value })}
+            // 4. CORRECIÓN LÓGICA: Vinculamos a form.password
+            value={form.password}
+            onChange={(e) => setForm({ ...form, password: e.target.value })}
           />
         </Form.Group>
         <Button type="submit">Ingresar</Button>
       </Form>
-
-      <div className="mt-4">
-        <strong>Usuarios de prueba:</strong>
-        <ul className="small text-muted">
-          <li>Admin → <code>admin@mrpastel.cl</code> / <code>admin123</code></li>
-          <li>Cliente → <code>cliente@mrpastel.cl</code> / <code>cliente123</code></li>
-        </ul>
-      </div>
+      
+     
     </>
   );
 }

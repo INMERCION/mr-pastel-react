@@ -1,17 +1,17 @@
 import { createContext, useState, useContext, useEffect } from "react";
+// 1. IMPORTAMOS LOS USUARIOS DEL ARCHIVO QUE NOS DISTE
+import { seedUsers } from '../data/seedUsers.js';
 
 const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
 
 export function AuthProvider({ children }) {
-  // Usuarios simulados (solo para demo/local)
-  const mockUsers = [
-    { id: 1, email: "admin@mrpastel.cl", pass: "admin123", role: "admin", name: "Administrador" },
-    { id: 2, email: "cliente@mrpastel.cl", pass: "cliente123", role: "user", name: "Cliente de Prueba" },
-  ];
-
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true); // rehidratación
+  
+  // 2. Usamos seedUsers como estado inicial (en lugar de mockUsers)
+  const [users, setUsers] = useState(seedUsers); 
+  
+  const [user, setUser] = useState(null); // El usuario con sesión iniciada
+  const [loading, setLoading] = useState(true);
 
   // Recuperar sesión persistida (rehidratación)
   useEffect(() => {
@@ -21,7 +21,6 @@ export function AuthProvider({ children }) {
         setUser(JSON.parse(stored));
       }
     } catch (err) {
-      // si hay problema con JSON.parse o storage, limpiar
       console.error("Error rehidratando usuario desde localStorage:", err);
       localStorage.removeItem("user");
       setUser(null);
@@ -30,9 +29,11 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
-  // Iniciar sesión: devuelve el usuario sanitizado o false
+  // 3. Modificamos signIn para que use la lista de estado 'users'
   const signIn = async (email, password) => {
-    const found = mockUsers.find((u) => u.email === email && u.pass === password);
+    // Usamos 'users' (del estado) y 'password' (del mock)
+    const found = users.find((u) => u.email === email && u.password === password); 
+    
     if (found) {
       // No guardar la contraseña en localStorage por seguridad
       const safeUser = {
@@ -40,6 +41,7 @@ export function AuthProvider({ children }) {
         email: found.email,
         role: found.role,
         name: found.name,
+        rut: found.rut // Agregamos RUT
       };
       setUser(safeUser);
       try {
@@ -64,8 +66,51 @@ export function AuthProvider({ children }) {
 
   const isAdmin = user?.role === "admin";
 
+  // --- 4. NUEVAS FUNCIONES CRUD PARA EL ADMIN ---
+  
+  const addUser = (newUser) => {
+    // Validar que el email o RUT no existan (opcional pero recomendado)
+    const emailExists = users.some(u => u.email === newUser.email);
+    const rutExists = users.some(u => u.rut === newUser.rut);
+
+    if (emailExists || rutExists) {
+      alert("El email o RUT ya están registrados.");
+      return false; // No se pudo agregar
+    }
+
+    const userWithId = {
+      ...newUser,
+      id: users.length + 1 // Simulación de ID
+    };
+    setUsers([...users, userWithId]);
+    return true; // Éxito
+  };
+
+  const updateUser = (updatedUser) => {
+    setUsers(users.map(u => 
+      u.id === updatedUser.id ? { ...u, ...updatedUser } : u
+    ));
+  };
+
+  const deleteUser = (userId) => {
+    setUsers(users.filter(u => u.id !== userId));
+  };
+
+  // 5. EXPONEMOS LOS NUEVOS VALORES
+  const value = {
+    user,
+    isAdmin,
+    signIn,
+    signOut,
+    loading,
+    users, // La lista completa de usuarios
+    addUser,
+    updateUser,
+    deleteUser
+  };
+
   return (
-    <AuthContext.Provider value={{ user, isAdmin, signIn, signOut, loading }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );
