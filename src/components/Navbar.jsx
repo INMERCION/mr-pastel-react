@@ -1,21 +1,37 @@
 import { NavLink } from "react-router-dom";
-import { Navbar as BSNavbar, Nav, Container, NavDropdown, Badge } from "react-bootstrap";
+import {
+  Navbar as BSNavbar,
+  Nav,
+  Container,
+  NavDropdown,
+  Badge,
+} from "react-bootstrap";
 import { FaShoppingCart } from "react-icons/fa";
 import { useContext } from "react";
 import { CartContext } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 
 export default function Navbar() {
-  const { items } = useContext(CartContext);
+
+
+  
+  const { count } = useContext(CartContext);
   const { user, signOut, isAdmin } = useAuth();
 
-  const totalItems = items?.reduce((acc, it) => acc + it.qty, 0) || 0;
-
   return (
-    <BSNavbar bg="white" expand="lg" className="shadow-sm py-3">
+    <BSNavbar
+      bg="white"
+      expand="lg"
+      className="shadow-sm py-3 fixed-top"
+      style={{ zIndex: 1030 }} 
+    >
       <Container>
         {/* Logo */}
-        <BSNavbar.Brand as={NavLink} to="/" className="d-flex align-items-center fw-bold text-danger">
+        <BSNavbar.Brand
+          as={NavLink}
+          to="/"
+          className="d-flex align-items-center fw-bold text-danger"
+        >
           <img
             src="/images/logo1_sf.png"
             alt="Mr. Pastel"
@@ -49,15 +65,19 @@ export default function Navbar() {
 
         {/* Icono carrito + usuario o login */}
         <Nav className="align-items-center ms-auto">
-          <Nav.Link as={NavLink} to="/carrito" className="position-relative me-3">
+          <Nav.Link
+            as={NavLink}
+            to="/carrito"
+            className="position-relative me-3"
+          >
             <FaShoppingCart size={20} />
-            {totalItems > 0 && (
+            {count > 0 && (
               <Badge
                 pill
                 bg="danger"
                 className="position-absolute top-0 start-100 translate-middle"
               >
-                {totalItems}
+                {count}
               </Badge>
             )}
           </Nav.Link>
