@@ -1,18 +1,40 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import SidebarAdmin from './SidebarAdmin';
-import './AdminLayout.css'; // Crearemos este CSS para el layout
+import { Button } from 'react-bootstrap';
+import { FaBars } from 'react-icons/fa';
+import './AdminLayout.css'; 
 
 export default function AdminLayout() {
-  return (
-    <div className="admin-layout">
-      {/* 1. El Menú Lateral (Sidebar) */}
-      <SidebarAdmin />
+  // Dejamos 'false' por defecto para que en desktop aparezca abierto
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
-      {/* 2. El Contenido Principal de Admin */}
+  const toggleSidebar = () => {
+    setIsCollapsed(!isCollapsed);
+  };
+
+  return (
+    <div className={`admin-layout ${isCollapsed ? 'collapsed' : ''}`}>
+      
+      {/* 1. Este botón AHORA es SOLO para móvil */}
+      <Button 
+        variant="light" 
+        onClick={toggleSidebar} 
+        className="admin-toggle-btn-mobile" // <- Clase actualizada
+      >
+        <FaBars />
+      </Button>
+
+      {/* 2. Backdrop (sin cambios) */}
+      <div className="sidebar-backdrop" onClick={toggleSidebar}></div>
+      
+      {/* 3. Pasamos la función de toggle al Sidebar */}
+      <SidebarAdmin 
+        isCollapsed={isCollapsed} 
+        toggleSidebar={toggleSidebar} // <- La pasamos de nuevo
+      />
+
       <main className="admin-content">
-        {/* Aquí es donde se renderizarán las sub-páginas (usuarios, productos, etc.) */}
-        
         <Outlet /> 
       </main>
     </div>
