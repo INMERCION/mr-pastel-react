@@ -13,6 +13,7 @@ import Registro from './pages/Registro';
 import Contacto from './pages/Contacto';
 import Blog from './pages/Blog';
 import Nosotros from './pages/Nosotros';
+import BlogDetalle from './pages/BlogDetalle';
 
 // Admin (placeholders)
 import AdminHome from './pages/admin/AdminHome';
@@ -37,6 +38,7 @@ export default function App() {
           <Route path="/contacto" element={<Contacto />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/nosotros" element={<Nosotros />} />
+          <Route path="/blogs/:slug" element={<BlogDetalle />} />
         </Route>
 
 
