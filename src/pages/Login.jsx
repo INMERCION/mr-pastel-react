@@ -12,10 +12,10 @@ export default function Login() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    const ok = await signIn(form.email, form.pass);
-    if (ok) {
-      const stored = JSON.parse(localStorage.getItem("user"));
-      nav(stored.role === "admin" ? "/admin" : "/");
+    const res = await signIn(form.email, form.pass);
+    if (res) {
+      // signIn ahora devuelve el usuario sanitizado
+      nav(res.role === "admin" ? "/admin" : "/");
     } else {
       setError("Credenciales incorrectas");
     }
