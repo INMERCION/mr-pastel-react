@@ -55,7 +55,7 @@ export default function ProductoDetalle() {
             src={producto.imagen}
             alt={producto.nombre}
             fluid
-            className="rounded-3 shadow-sm"
+            className="rounded-3 shadow-sm detalle-imagen-fija"
           />
         </Col>
 

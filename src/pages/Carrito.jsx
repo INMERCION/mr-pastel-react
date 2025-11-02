@@ -2,6 +2,7 @@ import { useContext } from 'react';
 import { Table, Button, Form, InputGroup, Card } from 'react-bootstrap';
 import { CartContext } from '../context/CartContext';
 import { useNavigate } from 'react-router-dom';
+import { BiTrash } from "react-icons/bi";
 
 export default function Carrito() {
   const { items, updateItemQuantity, removeItem, clear } = useContext(CartContext);
@@ -108,7 +109,7 @@ export default function Carrito() {
                   size="sm"
                   onClick={() => removeItem(item.id)}
                 >
-                  <i className="bi bi-trash"></i>
+                  <BiTrash/>
                 </Button>
               </td>
             </tr>

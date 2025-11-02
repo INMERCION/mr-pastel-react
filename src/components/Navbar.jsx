@@ -22,7 +22,7 @@ export default function Navbar() {
     <BSNavbar
       bg="white"
       expand="lg"
-      className="shadow-sm py-3 fixed-top"
+      className="shadow-sm py-3 sticky-top"
       style={{ zIndex: 1030 }} 
     >
       <Container>

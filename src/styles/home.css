@@ -1,5 +1,6 @@
 /* ======== HERO SECTION ======== */
 .hero-section {
+  border-radius: 0.75rem;
   position: relative;
   background-size: cover;
   background-position: center;
