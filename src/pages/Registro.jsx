@@ -1,17 +1,10 @@
 import { useState, useEffect } from 'react';
 // 1. IMPORTAMOS useNavigate y Alert
 import { useNavigate } from 'react-router-dom';
-import {
-  Form,
-  Button,
-  Row,
-  Col,
-  Container,
-  Card,
-  Alert, // <--- Importado
-} from 'react-bootstrap';
+import {Form,Button,Row,Col,Container,Card,Alert, } from 'react-bootstrap';
 import { validarRUT, dominioPermitido, passwordOk, passwordsMatch } from '../utils/validators';
 import { regions } from '../data/regions';
+import { useAuth } from '../context/AuthContext';
 
 export default function Registro() {
   const [form, setForm] = useState({
@@ -32,6 +25,7 @@ export default function Registro() {
   
   // 3. INICIALIZAMOS useNavigate
   const nav = useNavigate();
+  const { addUser } = useAuth();
 
   const allowedDomains = ['gmail.com', 'hotmail.com', 'outlook.com', 'yahoo.com'];
 
@@ -61,18 +55,29 @@ export default function Registro() {
   const onSubmit = (e) => {
     e.preventDefault();
     setValidated(true);
-    
+
     if (validateForm()) {
-      // 4. LÓGICA DE REDIRECCIÓN
-      // Quitamos el alert() y mostramos nuestro componente Alert
-      setShowSuccess(true);
-      
-      // Aquí iría la lógica para enviar los datos al servidor
-      
-      // Esperamos 3 segundos y redirigimos a /login
-      setTimeout(() => {
-        nav('/login');
-      }, 3000); // 3 segundos
+
+      const newUser = {
+        rut: form.rut,
+        name: form.nombre, 
+        email: form.email,
+        password: form.password,
+        role: 'user' 
+      };
+
+      const success = addUser(newUser);
+
+      if (success) {
+        
+        setShowSuccess(true);
+
+        setTimeout(() => {
+          nav('/login');
+          }, 3000); 
+      } else {
+        setValidated(false); 
+      }
     }
   };
 

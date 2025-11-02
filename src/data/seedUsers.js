@@ -11,7 +11,7 @@ export const seedUsers = [
     email: 'admin@mrpastel.cl',
     role: 'admin',
     // Password: Admin2023!
-    password: 'Admin2023!'
+    password: 'Admin2023'
   },
   {
     id: 2,
