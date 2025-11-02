@@ -11,3 +11,13 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+
+
+footer a:hover {
+  color: #ffb3b3; /* tono pastel */
+}
+.navbar-nav .nav-link.active {
+  color: #dc3545 !important; /* rojo pastel */
+  font-weight: 600;
+}

@@ -1,10 +1,13 @@
 /* src/styles/estilos.css */
 :root {
   --brand: #ff5e7e;
+  --color-primario: #dc3545;
+  --color-secundario: #ff6b6b;
+  --fuente-base: 'Segoe UI', sans-serif;
 }
 
 body {
-  background-color: #fff;
+  background: linear-gradient(180deg, #fffdf0 0%, #fff 100%);
   font-family: 'Segoe UI', sans-serif;
   margin: 0;
   padding: 0;
