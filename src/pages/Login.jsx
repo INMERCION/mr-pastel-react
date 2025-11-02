@@ -1,5 +1,4 @@
 import { useState } from "react";
-// 1. IMPORTAMOS los componentes de layout que vamos a usar
 import {
   Form,
   Button,
@@ -9,7 +8,8 @@ import {
   Col,
   Card,
 } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+// 1. IMPORTAMOS Link PARA LA NAVEGACIÓN
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 export default function Login() {
@@ -30,17 +30,14 @@ export default function Login() {
   };
 
   return (
-    // 2. Usamos un Container con margen vertical (my-5)
-    // Esto soluciona el problema de la barra de navegación
     <Container className="my-5">
-      {/* 3. Usamos Row y Col para centrar el contenido */}
       <Row className="justify-content-md-center">
         <Col md={6} lg={5} xl={4}>
-          {/* 4. Envolvemos todo en una Card para más sofisticación */}
-          <Card>
+          <Card className="border-0 shadow">
             <Card.Body className="p-4">
-              {/* Movemos el H1 y lo centramos */}
-              <h1 className="text-center text-danger fw-bold mb-4">Iniciar sesión</h1>
+              <h1 className="text-center text-danger fw-bold mb-4">
+                Iniciar sesión
+              </h1>
 
               {error && <Alert variant="danger">{error}</Alert>}
 
@@ -69,11 +66,17 @@ export default function Login() {
                   />
                 </Form.Group>
 
-                {/* 5. Hacemos que el botón ocupe todo el ancho */}
                 <Button type="submit" className="w-100">
                   Ingresar
                 </Button>
               </Form>
+
+              {/* 2. AQUÍ AGREGAMOS LA LÍNEA */}
+              <div className="mt-3 text-center">
+                <span>¿No tienes una cuenta? </span>
+                <Link to="/registro">Regístrate</Link>
+              </div>
+              
             </Card.Body>
           </Card>
         </Col>

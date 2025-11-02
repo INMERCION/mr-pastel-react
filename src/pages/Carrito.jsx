@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { Table, Button, Form, InputGroup, Card } from 'react-bootstrap';
+import { Table, Button, Form, InputGroup, Card, Image } from 'react-bootstrap';
 import { CartContext } from '../context/CartContext';
 import { useNavigate } from 'react-router-dom';
 import { BiTrash } from "react-icons/bi";
@@ -24,8 +24,15 @@ export default function Carrito() {
 
   if (!items.length) {
     return (
-      <Card className="text-center p-5">
+      <Card className="text-center p-5 shadow border-0">
         <Card.Body>
+          <Image
+                  src="../images/duda.jpg" 
+                  alt="Carrito vacío"
+                  fluid 
+                  className="mb-4" 
+                  style={{ maxWidth: '150px', height: 'auto' }} 
+                />
           <Card.Title>Tu carrito está vacío</Card.Title>
           <Card.Text>
             ¿No sabes qué comprar? ¡Revisa nuestros productos destacados!
@@ -40,7 +47,7 @@ export default function Carrito() {
 
   return (
     <div className="carrito-container">
-      <h1 className="mb-4">Carrito de Compras</h1>
+      <h1 className="mb-4 text-center text-danger fw-bold">Carrito de Compras</h1>
       
       <Table responsive hover className="align-middle">
         <thead className="table-light">
