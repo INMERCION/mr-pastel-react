@@ -4,14 +4,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button, Row, Col } from "react-bootstrap";
 import products from "../data/products";
 import ProductCard from "../components/ProductCard";
-import { CartContext } from "../context/CartContext"; 
+import { CartContext } from "../context/CartContext";
 import "../styles/home.css";
 import "../styles/productos.css";
 
 export default function Home() {
   const navigate = useNavigate();
-  const { addItem } = useContext(CartContext); 
-  const destacados = products.slice(0, 6); 
+  const { addItem } = useContext(CartContext);
+  const destacados = products.slice(0, 6);
 
   return (
     <div className="home-page">
@@ -39,24 +39,37 @@ export default function Home() {
         ></div>
 
         <div className="container position-relative">
-          <div className="col-12 col-md-6">
-            <h1 className="fw-bold mb-3" style={{ color: "#ff6b6b" }}>
-              ¡Celebramos 50 años de dulzura!
-            </h1>
-            <p className="fs-5 mb-4 text-light">
-              Ganadores del Récord Guinness 1995 por la torta más grande del
-              mundo.
-            </p>
-            <Button
-              as={Link}
-              to="/productos"
-              variant="danger"
-              size="lg"
-              className="rounded-pill fw-semibold"
-            >
-              Ver Productos
-            </Button>
-          </div>
+          <Row className="align-items-center">
+            <Col md={7}>
+              <h1 className="fw-bold mb-3" style={{ color: "#ff6b6b" }}>
+                ¡Celebramos 50 años de dulzura!
+              </h1>
+
+              <p className="fs-5 mb-4 text-light">
+                Ganadores del Récord Guinness 1995 por la torta más grande del
+                mundo.
+              </p>
+              <Button
+                as={Link}
+                to="/productos"
+                variant="danger"
+                size="lg"
+                className="rounded-pill fw-semibold"
+              >
+                Ver Productos
+              </Button>
+            </Col>
+
+            {/* ✅ AQUÍ ESTÁ EL CAMBIO. Se quitaron 'd-none' y 'd-md-block' */}
+            <Col md={5} className="text-center">
+              <img
+                src="/images/logo1_sf.png"
+                alt="Mr. Pastel Chef"
+                className="img-fluid"
+                style={{ maxHeight: "250px" }}
+              />
+            </Col>
+          </Row>
         </div>
       </section>
 
@@ -73,9 +86,8 @@ export default function Home() {
                 key={producto.id}
                 className="d-flex justify-content-center align-items-stretch"
               >
-                {/* 🔹 Wrapper para centrar tarjetas más pequeñas */}
                 <div style={{ width: "100%", maxWidth: "260px" }}>
-                  <ProductCard producto={producto} onAdd={addItem} /> {/* ✅ Fix */}
+                  <ProductCard producto={producto} onAdd={addItem} />
                 </div>
               </Col>
             ))}

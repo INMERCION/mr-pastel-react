@@ -13,7 +13,7 @@
   height: 100vh;
   width: 250px; /* Ancho expandido */
   background-color: #ffffff;
-  color: rgb(88, 34, 34);
+  color: #0d6efd;
   display: flex;
   flex-direction: column;
   padding: 1rem;
@@ -50,7 +50,7 @@
   justify-content: space-between;
   padding-bottom: 1rem;
   margin-bottom: 1rem;
-  border-bottom: 1px solid #ca620d;
+  border-bottom: 1px solid #0d6efd;
   width: 100%;
 }
 
