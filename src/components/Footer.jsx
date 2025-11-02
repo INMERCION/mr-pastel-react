@@ -16,7 +16,7 @@ export default function Footer() {
       <Container>
         <Row className="gy-4">
           {/* Columna 1: Información */}
-          <Col md={4}>
+          <Col md={4} className="text-center text-md-start">
             <h5 className="fw-bold mb-3 text-uppercase">Pastelería Mr. Pastel</h5>
             <p className="mb-1">Av. Dulce 123, Santiago, Chile</p>
             <p className="mb-1">Tel: +56 9 1234 5678</p>
@@ -24,7 +24,7 @@ export default function Footer() {
           </Col>
 
           {/* Columna 2: Navegación */}
-          <Col md={4}>
+          <Col md={4} className="text-center text-md-start">
             <h6 className="fw-bold mb-3 text-uppercase">Navegación</h6>
             <ul className="list-unstyled">
               <li><NavLink to="/" className="footer-link">Home</NavLink></li>
@@ -36,9 +36,9 @@ export default function Footer() {
           </Col>
 
           {/* Columna 3: Redes sociales */}
-          <Col md={4}>
+          <Col md={4} className="text-center text-md-start">
             <h6 className="fw-bold mb-3 text-uppercase">Síguenos</h6>
-            <div className="d-flex gap-3 fs-4">
+            <div className="d-flex gap-3 fs-4 justify-content-center justify-content-md-start" >
               <a href="#" className="footer-icon"><FaFacebook /></a>
               <a href="#" className="footer-icon"><FaInstagram /></a>
               <a href="#" className="footer-icon"><FaTwitter /></a>
@@ -51,7 +51,7 @@ export default function Footer() {
         <hr className="border-secondary my-4" />
 
         {/* Franja inferior */}
-        <p className="text-center text-muted small mb-0">
+        <p className="text-center text-white-50 small mb-0">
           © {new Date().getFullYear()} Pastelería Mr. Pastel. Todos los derechos reservados.
         </p>
       </Container>
