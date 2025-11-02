@@ -1,6 +1,7 @@
 /* ======== PRODUCTOS ======== */
 .catalogo-page {
-  background-color: #fff;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #fff 0%, #fdf2f2 100%);
   min-height: 100vh;
 }
 

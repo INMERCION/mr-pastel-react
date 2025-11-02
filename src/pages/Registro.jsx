@@ -80,7 +80,7 @@ export default function Registro() {
     <Container className="my-5">
       <Row className="justify-content-md-center">
         <Col md={8} lg={7}>
-          <Card>
+          <Card className="border-0 shadow"> 
             <Card.Body className="p-4">
               <h1 className="text-center text-danger fw-bold mb-4">Registro</h1>
 

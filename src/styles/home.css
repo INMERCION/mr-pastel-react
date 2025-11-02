@@ -49,6 +49,8 @@
 /* ======== PRODUCTOS DESTACADOS ======== */
 .productos-destacados {
   background: linear-gradient(180deg, #fff 0%, #fdf2f2 100%);
+  border-radius: 12px;
+  margin: 3rem 0;
 }
 
 .productos-destacados h2 {

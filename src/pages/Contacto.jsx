@@ -49,7 +49,7 @@ export default function Contacto() {
     <Container className="my-5">
       <Row className="justify-content-md-center">
         <Col md={7} lg={6}>
-          <Card>
+          <Card className="border-0 shadow">
             <Card.Body className="p-4">
               
               <h1 className="text-center text-danger fw-bold mb-4">Contacto</h1>
