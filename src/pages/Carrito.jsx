@@ -2,24 +2,32 @@ import { useContext } from 'react';
 import { Table, Button, Form, InputGroup, Card, Image } from 'react-bootstrap';
 import { CartContext } from '../context/CartContext';
 import { useNavigate } from 'react-router-dom';
-import { BiTrash } from "react-icons/bi";
 
 export default function Carrito() {
-  const { items, updateItemQuantity, removeItem, clear } = useContext(CartContext);
+  const { items, updateItemQuantity, removeItem, clear } =
+    useContext(CartContext);
   const navigate = useNavigate();
 
-  // Calcular el total
-  const total = items.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
+  const total = items.reduce(
+    (sum, item) => sum + item.precio * item.cantidad,
+    0
+  );
 
-  // Manejar cambios en la cantidad
   const handleQuantityChange = (item, newQty) => {
     const quantity = Math.max(1, Math.min(99, Number(newQty) || 0));
     updateItemQuantity(item.id, quantity);
   };
 
-  // Continuar con la compra
+  const handleDecrement = (item) => {
+    if (item.cantidad > 1) {
+      updateItemQuantity(item.id, item.cantidad - 1);
+    } else {
+      removeItem(item.id);
+    }
+  };
+
   const handleCheckout = () => {
-    navigate('/checkout'); // Asumiendo que tendrás una ruta de checkout
+    navigate("/");
   };
 
   if (!items.length) {
@@ -27,17 +35,17 @@ export default function Carrito() {
       <Card className="text-center p-5 shadow border-0">
         <Card.Body>
           <Image
-                  src="../images/duda.jpg" 
-                  alt="Carrito vacío"
-                  fluid 
-                  className="mb-4" 
-                  style={{ maxWidth: '150px', height: 'auto' }} 
-                />
+            src="../images/duda.jpg"
+            alt="Carrito vacío"
+            fluid
+            className="mb-4"
+            style={{ maxWidth: "150px", height: "auto" }}
+          />
           <Card.Title>Tu carrito está vacío</Card.Title>
           <Card.Text>
             ¿No sabes qué comprar? ¡Revisa nuestros productos destacados!
           </Card.Text>
-          <Button variant="primary" onClick={() => navigate('/productos')}>
+          <Button variant="primary" onClick={() => navigate("/productos")}>
             Ver Productos
           </Button>
         </Card.Body>
@@ -47,16 +55,18 @@ export default function Carrito() {
 
   return (
     <div className="carrito-container">
-      <h1 className="mb-4 text-center text-danger fw-bold">Carrito de Compras</h1>
-      
+      <h1 className="mb-4 text-center text-danger fw-bold">
+        Carrito de Compras
+      </h1>
+
       <Table responsive hover className="align-middle">
         <thead className="table-light">
           <tr>
             <th>Producto</th>
-            <th style={{ width: "200px" }}>Cantidad</th>
-            <th style={{ width: "160px" }}>Precio</th>
-            <th style={{ width: "160px" }}>Subtotal</th>
-            <th style={{ width: "100px" }}></th>
+            <th>Cantidad</th>
+            <th>Precio</th>
+            <th>Subtotal</th>
+            
           </tr>
         </thead>
         <tbody>
@@ -72,7 +82,8 @@ export default function Carrito() {
                         width: "50px",
                         height: "50px",
                         objectFit: "cover",
-                        marginRight: "1rem"
+                        marginRight: "1rem",
+                        borderRadius: "4px",
                       }}
                     />
                   )}
@@ -85,10 +96,10 @@ export default function Carrito() {
                 </div>
               </td>
               <td>
-                <InputGroup size="sm">
+                <InputGroup size="sm" className="flex-nowrap">
                   <Button
                     variant="outline-secondary"
-                    onClick={() => handleQuantityChange(item, item.cantidad - 1)}
+                    onClick={() => handleDecrement(item)}
                   >
                     -
                   </Button>
@@ -97,41 +108,44 @@ export default function Carrito() {
                     min="1"
                     max="99"
                     value={item.cantidad}
-                    onChange={(e) => handleQuantityChange(item, e.target.value)}
-                    style={{ maxWidth: "60px", textAlign: "center" }}
+                    onChange={(e) =>
+                      handleQuantityChange(item, e.target.value)
+                    }
+                    style={{ width: "25px", textAlign: "center" }}
+                    onFocus={(e) => e.target.blur()}
                   />
                   <Button
                     variant="outline-secondary"
-                    onClick={() => handleQuantityChange(item, item.cantidad + 1)}
+                    onClick={() =>
+                      handleQuantityChange(item, item.cantidad + 1)
+                    }
                   >
                     +
                   </Button>
                 </InputGroup>
               </td>
-              <td>${item.precio.toLocaleString('es-CL')}</td>
-              <td>${(item.precio * item.cantidad).toLocaleString('es-CL')}</td>
-              <td>
-                <Button
-                  variant="outline-danger"
-                  size="sm"
-                  onClick={() => removeItem(item.id)}
-                >
-                  <BiTrash/>
-                </Button>
+              <td className="text-nowrap">
+                ${item.precio.toLocaleString("es-CL")}
+              </td>
+              <td className="text-nowrap">
+                ${(item.precio * item.cantidad).toLocaleString("es-CL")}
               </td>
             </tr>
           ))}
         </tbody>
         <tfoot>
           <tr>
-            <td colSpan="3" className="text-end fw-bold">Total:</td>
-            <td className="fw-bold">${total.toLocaleString('es-CL')}</td>
-            <td></td>
+            <td colSpan="3" className="text-end fw-bold">
+              Total:
+            </td>
+            <td className="fw-bold text-nowrap">
+              ${total.toLocaleString("es-CL")}
+            </td>
           </tr>
         </tfoot>
       </Table>
 
-      <div className="d-flex justify-content-between align-items-center mt-4">
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-stretch align-items-md-center mt-4 gap-2">
         <Button
           variant="outline-secondary"
           onClick={clear}
@@ -139,11 +153,10 @@ export default function Carrito() {
         >
           Vaciar Carrito
         </Button>
-        <div>
+        <div className="d-flex flex-column flex-md-row gap-2">
           <Button
             variant="outline-primary"
-            className="me-2"
-            onClick={() => navigate('/productos')}
+            onClick={() => navigate("/productos")}
           >
             Seguir Comprando
           </Button>
