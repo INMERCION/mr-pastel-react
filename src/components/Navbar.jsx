@@ -1,17 +1,19 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import {Navbar as BSNavbar,Nav,Container,NavDropdown,Badge,} from "react-bootstrap";
+import {Navbar as BSNavbar,Nav,Container,NavDropdown,Badge,Button,} from "react-bootstrap";
 import { FaShoppingCart } from "react-icons/fa";
 // 1. Importa useState
 import { useContext, useState } from "react";
 import { CartContext } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
+import { MusicContext } from "../context/MusicContext";
 // En App.js o main.jsx
 import "../index.css"; // O el nombre de tu archivo CSS
 
 export default function Navbar() {
   const { count } = useContext(CartContext);
   const { user, signOut, isAdmin } = useAuth();
+  const { musicActive, toggleMusic } = useContext(MusicContext);
 
   // 2. Añade el estado y las funciones de control
   const [expanded, setExpanded] = useState(false);
@@ -40,7 +42,7 @@ export default function Navbar() {
           onClick={handleNavClose} // <-- También es buena idea añadirlo al logo
         >
           <img
-            src="/images/logo1_sf.png"
+            src="/images/logo_sf.png"
             alt="Mr. Pastel"
             height="40"
           />
@@ -102,8 +104,16 @@ export default function Navbar() {
           </Nav>
         </BSNavbar.Collapse>
 
-        {/* Icono carrito */}
+        {/* Icono carrito y botón música */}
         <Nav className="align-items-center ms-auto">
+          <Button
+            variant="outline-danger"
+            size="sm"
+            className="me-3 rounded-pill fw-semibold"
+            onClick={toggleMusic}
+          >
+            {musicActive ? '🔊' : '🔇'}
+          </Button>
           <Nav.Link
             as={NavLink}
             to="/carrito"
