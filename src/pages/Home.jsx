@@ -17,6 +17,29 @@ export default function Home() {
     <div className="home-page">
       {/* 🧁 HERO SECTION */}
       <section
+      className="hero-section d-flex align-items-center text-light text-center text-md-start mb-4"
+        style={{
+          backgroundImage: "url('/images/logo4_sf.gif')",
+          backgroundSize: "flex",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat", // <-- Y AÑADE ESTE
+          minHeight: "40vh",
+          position: "relative",
+        }}>
+          <div
+          className="overlay"
+          style={{
+            backgroundColor: "rgba(246, 105, 105, 0.09)",
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+          }}
+        ></div>
+
+      </section>
+      <section
         className="hero-section d-flex align-items-center text-light text-center text-md-start"
         style={{
           backgroundImage: "url('/images/2.jpg')",
@@ -29,7 +52,7 @@ export default function Home() {
         <div
           className="overlay"
           style={{
-            backgroundColor: "rgba(0, 0, 0, 0.45)",
+            backgroundColor: "rgba(0, 0, 0, 0.07)",
             position: "absolute",
             top: 0,
             left: 0,
@@ -63,7 +86,7 @@ export default function Home() {
             {/* ✅ AQUÍ ESTÁ EL CAMBIO. Se quitaron 'd-none' y 'd-md-block' */}
             <Col md={5} className="text-center">
               <img
-                src="/images/logo1_sf.png"
+                src="/images/logo_sf.png"
                 alt="Mr. Pastel Chef"
                 className="img-fluid"
                 style={{ maxHeight: "250px" }}

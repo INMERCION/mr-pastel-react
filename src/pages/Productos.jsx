@@ -1,6 +1,5 @@
 // Productos.jsx - Catálogo con búsqueda, filtro por categoría y paginación local
 import React, { useContext, useState, useMemo, useEffect } from "react";
-import products from "../data/products";
 import ProductGrid from "../components/ProductGrid";
 import { CartContext } from "../context/CartContext";
 import "../styles/productos.css";
@@ -13,23 +12,33 @@ export default function Productos() {
   const [categoria, setCategoria] = useState("Todas");
   const [pagina, setPagina] = useState(1);
 
-  // 🔧 Categorías únicas
+  // ✅ Estados para datos remotos
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // URL de la API (remota)
+  const API_URL = "https://iacademy2.oracle.com/ords/grupo2/productos_g10/producto/";
+
+  // 🔧 Categorías únicas (derivadas de los productos cargados)
   const categorias = useMemo(() => {
-    const unicas = ["Todas", ...new Set(products.map((p) => p.categoria))];
+    const unicas = [
+      "Todas",
+      ...new Set((products || []).map((p) => p.categoria || "Otros")),
+    ];
     return unicas;
-  }, []);
+  }, [products]);
 
   // 🧠 Filtrar productos por nombre y categoría
   const productosFiltrados = useMemo(() => {
-    return products.filter((p) => {
+    return (products || []).filter((p) => {
       const coincideCategoria =
         categoria === "Todas" || p.categoria === categoria;
-      const coincideBusqueda = p.nombre
-        .toLowerCase()
-        .includes(busqueda.toLowerCase());
+      const nombre = (p.nombre || "").toString();
+      const coincideBusqueda = nombre.toLowerCase().includes(busqueda.toLowerCase());
       return coincideCategoria && coincideBusqueda;
     });
-  }, [busqueda, categoria]);
+  }, [busqueda, categoria, products]);
 
   // 📄 Paginación
   const productosPorPagina = 8;
@@ -42,6 +51,58 @@ export default function Productos() {
   useEffect(() => {
     setPagina(1);
   }, [busqueda, categoria]);
+
+  // 🛰️ Fetch: obtener productos desde la API remota al montar el componente
+  useEffect(() => {
+    let mounted = true;
+    setLoading(true);
+    setError(null);
+
+    fetch(API_URL)
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
+        return res.json();
+      })
+      .then((data) => {
+        if (!mounted) return;
+
+        // Normalizar la respuesta: ORDS/REST puede devolver distintos shapes.
+        let items = [];
+        if (Array.isArray(data)) items = data;
+        else if (Array.isArray(data.items)) items = data.items;
+        else if (Array.isArray(data.rows)) items = data.rows;
+        else {
+          // buscar primer array en el objeto
+          const found = Object.values(data).find((v) => Array.isArray(v));
+          items = found || [];
+        }
+
+        // Mapear campos a la estructura que usa la app
+        const normalized = items.map((it, idx) => ({
+          id: it.id ?? it.ID ?? it.producto_id ?? it.PRODUCTO_ID ?? idx,
+          nombre:
+            it.nombre ?? it.NOMBRE ?? it.nombre_producto ?? it.name ?? "",
+          categoria: it.categoria ?? it.CATEGORIA ?? it.categoria_producto ?? "Otros",
+          precio: Number(it.precio ?? it.PRECIO ?? it.price ?? 0),
+          stock: Number(it.stock ?? it.STOCK ?? it.existencia ?? 0),
+          imagen:
+            it.imagen ?? it.IMAGEN ?? it.imagen_url ?? it.image ?? "/images/default.jpg",
+        }));
+
+        setProducts(normalized);
+      })
+      .catch((err) => {
+        if (!mounted) return;
+        setError(err.message || "Error al cargar productos");
+      })
+      .finally(() => {
+        if (mounted) setLoading(false);
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   return (
     <div className="catalogo-page container py-5">
