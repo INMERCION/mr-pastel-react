@@ -105,7 +105,7 @@ export default function Navbar() {
         </BSNavbar.Collapse>
 
         {/* Icono carrito y botón música */}
-        <Nav className="align-items-center ms-auto">
+        <Nav className="align-items-center ms-auto flex-row">
           <Button
             variant="outline-danger"
             size="sm"

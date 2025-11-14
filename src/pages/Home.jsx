@@ -16,33 +16,11 @@ export default function Home() {
   return (
     <div className="home-page">
       {/* 🧁 HERO SECTION */}
-      <section
-      className="hero-section d-flex align-items-center text-light text-center text-md-start mb-4"
-        style={{
-          backgroundImage: "url('/images/logo4_sf.gif')",
-          backgroundSize: "flex",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat", // <-- Y AÑADE ESTE
-          minHeight: "40vh",
-          position: "relative",
-        }}>
-          <div
-          className="overlay"
-          style={{
-            backgroundColor: "rgba(246, 105, 105, 0.09)",
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-          }}
-        ></div>
-
-      </section>
+     
       <section
         className="hero-section d-flex align-items-center text-light text-center text-md-start"
         style={{
-          backgroundImage: "url('/images/2.jpg')",
+          backgroundImage: "url('/images/1.jpg')",
           backgroundSize: "cover",
           backgroundPosition: "center",
           minHeight: "80vh",
@@ -52,7 +30,7 @@ export default function Home() {
         <div
           className="overlay"
           style={{
-            backgroundColor: "rgba(0, 0, 0, 0.07)",
+            backgroundColor: "rgba(225, 7, 7, 0.07)",
             position: "absolute",
             top: 0,
             left: 0,
