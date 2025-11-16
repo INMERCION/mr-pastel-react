@@ -68,7 +68,7 @@ export default function Perfil() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setValidated(true);
 
@@ -86,19 +86,21 @@ export default function Perfil() {
         updatedData.password = formData.newPassword;
       }
 
-      updateUser(updatedData);
+      const success = await updateUser(updatedData);
       
-      setShowSuccess(true);
-      setFormData(prev => ({
-        ...prev,
-        currentPassword: '',
-        newPassword: '',
-        confirmPassword: ''
-      }));
+      if (success) {
+        setShowSuccess(true);
+        setFormData(prev => ({
+          ...prev,
+          currentPassword: '',
+          newPassword: '',
+          confirmPassword: ''
+        }));
 
-      setTimeout(() => {
-        setShowSuccess(false);
-      }, 3000);
+        setTimeout(() => {
+          setShowSuccess(false);
+        }, 3000);
+      }
     }
   };
 

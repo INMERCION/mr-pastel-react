@@ -15,9 +15,12 @@ export default function Contacto() {
   const [msg, setMsg] = useState({ nombre: '', email: '', mensaje: '' });
   const [validated, setValidated] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [sending, setSending] = useState(false);
 
   const { user } = useAuth();
   const nav = useNavigate();
+
+  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080';
 
   useEffect(() => {
     if (user) {
@@ -25,21 +28,37 @@ export default function Contacto() {
     }
   }, [user]);
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
     const form = e.currentTarget;
 
     if (form.checkValidity() === false) {
       e.stopPropagation();
-    } else {
-      console.log("Mensaje enviado:", msg);
-      // Mostramos la alerta de éxito
+      setValidated(true);
+      return;
+    }
+
+    setSending(true);
+
+    try {
+      const response = await fetch(`${API_URL}/api/contacto`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(msg)
+      });
+
+      if (!response.ok) throw new Error("Error al enviar mensaje");
+
       setShowSuccess(true);
       
-     
       setTimeout(() => {
         nav('/'); 
-      }, 2000); 
+      }, 2000);
+    } catch (err) {
+      console.error("Error enviando mensaje:", err);
+      alert("Error al enviar el mensaje. Inténtalo nuevamente.");
+    } finally {
+      setSending(false);
     }
 
     setValidated(true);

@@ -4,42 +4,60 @@ import { useAuth } from './AuthContext';
 const OrderContext = createContext();
 export const useOrders = () => useContext(OrderContext);
 
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080';
+
 export function OrderProvider({ children }) {
   const { user } = useAuth();
   const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  // Cargar pedidos del usuario desde localStorage
+  // Cargar pedidos del usuario desde API
   useEffect(() => {
     if (user) {
-      try {
-        const storedOrders = localStorage.getItem(`orders_${user.id}`);
-        if (storedOrders) {
-          setOrders(JSON.parse(storedOrders));
-        } else {
-          setOrders([]);
-        }
-      } catch (err) {
-        console.error('Error cargando pedidos:', err);
-        setOrders([]);
-      }
+      fetchOrders();
     } else {
       setOrders([]);
     }
   }, [user]);
 
-  // Guardar pedidos en localStorage cuando cambien
-  useEffect(() => {
-    if (user && orders.length > 0) {
-      try {
-        localStorage.setItem(`orders_${user.id}`, JSON.stringify(orders));
-      } catch (err) {
-        console.error('Error guardando pedidos:', err);
-      }
+  const fetchOrders = async () => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem("token");
+      const response = await fetch(`${API_URL}/api/pedidos/usuario/${user.id}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      
+      if (!response.ok) throw new Error("Error cargando pedidos");
+      
+      const data = await response.json();
+      
+      // Mapear pedidos del backend al formato del frontend
+      const mappedOrders = data.map(pedido => ({
+        id: pedido.id,
+        userId: pedido.usuarioId,
+        fecha: pedido.fechaCreacion,
+        estado: pedido.estado,
+        total: pedido.total,
+        productos: pedido.productos.map(item => ({
+          id: item.productoId,
+          nombre: item.nombre,
+          cantidad: item.cantidad,
+          precio: item.precio,
+          imagen: item.imagen
+        }))
+      }));
+      
+      setOrders(mappedOrders);
+    } catch (err) {
+      console.error("Error cargando pedidos:", err);
+      setOrders([]);
+    } finally {
+      setLoading(false);
     }
-  }, [orders, user]);
+  };
 
-  // Crear un nuevo pedido
-  const createOrder = (items, total) => {
+  const createOrder = async (items, total) => {
     if (!user) {
       throw new Error('Debes iniciar sesión para crear un pedido');
     }
@@ -48,56 +66,87 @@ export function OrderProvider({ children }) {
       throw new Error('El carrito está vacío');
     }
 
-    const newOrder = {
-      id: Date.now(), // ID único basado en timestamp
-      userId: user.id,
-      fecha: new Date().toISOString(),
-      estado: 'procesando',
-      total: total,
-      productos: items.map(item => ({
-        id: item.id,
-        nombre: item.nombre,
-        cantidad: item.cantidad,
-        precio: item.precio,
-        imagen: item.imagen
-      }))
-    };
+    try {
+      const token = localStorage.getItem("token");
+      const orderData = {
+        usuarioId: user.id,
+        total: total,
+        productos: items.map(item => ({
+          productoId: item.id,
+          cantidad: item.cantidad || item.qty,
+          precio: item.precio
+        }))
+      };
 
-    setOrders(prevOrders => [newOrder, ...prevOrders]);
-    return newOrder;
+      const response = await fetch(`${API_URL}/api/pedidos`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(orderData)
+      });
+
+      if (!response.ok) throw new Error("Error creando pedido");
+
+      const newOrder = await response.json();
+      setOrders(prevOrders => [newOrder, ...prevOrders]);
+      return newOrder;
+    } catch (err) {
+      console.error("Error creando pedido:", err);
+      throw err;
+    }
   };
 
-  // Obtener pedidos del usuario actual
   const getUserOrders = () => {
-    if (!user) return [];
-    return orders.filter(order => order.userId === user.id);
+    return orders;
   };
 
-  // Cancelar un pedido (solo si está en procesando)
-  const cancelOrder = (orderId) => {
-    setOrders(prevOrders =>
-      prevOrders.map(order =>
-        order.id === orderId && order.estado === 'procesando'
-          ? { ...order, estado: 'cancelado' }
-          : order
-      )
-    );
+  const cancelOrder = async (orderId) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`${API_URL}/api/pedidos/${orderId}/cancelar`, {
+        method: 'PUT',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      if (!response.ok) throw new Error("Error cancelando pedido");
+
+      await fetchOrders();
+    } catch (err) {
+      console.error("Error cancelando pedido:", err);
+      throw err;
+    }
   };
 
-  // Actualizar estado de un pedido (para admin)
-  const updateOrderStatus = (orderId, newStatus) => {
-    setOrders(prevOrders =>
-      prevOrders.map(order =>
-        order.id === orderId ? { ...order, estado: newStatus } : order
-      )
-    );
+  const updateOrderStatus = async (orderId, newStatus) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`${API_URL}/api/pedidos/${orderId}/estado`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ estado: newStatus })
+      });
+
+      if (!response.ok) throw new Error("Error actualizando estado");
+
+      await fetchOrders();
+    } catch (err) {
+      console.error("Error actualizando estado:", err);
+      throw err;
+    }
   };
 
   const value = {
     orders: getUserOrders(),
+    loading,
     createOrder,
     cancelOrder,
-    updateOrderStatus
+    updateOrderStatus,
+    refreshOrders: fetchOrders
   };
 
   return (

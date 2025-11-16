@@ -7,7 +7,7 @@ import { FaShoppingBag, FaClock, FaCheckCircle, FaTruck, FaTimesCircle } from 'r
 
 export default function Pedidos() {
   const { user } = useAuth();
-  const { orders, cancelOrder } = useOrders();
+  const { orders, cancelOrder, loading } = useOrders();
   const navigate = useNavigate();
   
   // Mock de pedidos eliminado - ahora usamos los pedidos reales del contexto
@@ -41,13 +41,28 @@ export default function Pedidos() {
     });
   };
 
-  const handleCancelOrder = (orderId) => {
+  const handleCancelOrder = async (orderId) => {
     if (window.confirm('¿Estás seguro de que deseas cancelar este pedido?')) {
-      cancelOrder(orderId);
+      try {
+        await cancelOrder(orderId);
+        alert('Pedido cancelado exitosamente');
+      } catch (err) {
+        alert('Error al cancelar el pedido');
+      }
     }
   };
 
   if (!user) return null;
+
+  if (loading) {
+    return (
+      <Container className="my-5 text-center">
+        <div className="spinner-border text-danger" role="status">
+          <span className="visually-hidden">Cargando...</span>
+        </div>
+      </Container>
+    );
+  }
 
   return (
     <Container className="my-5">
