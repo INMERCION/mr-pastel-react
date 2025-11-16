@@ -15,6 +15,8 @@ import Contacto from './pages/Contacto';
 import Blog from './pages/Blog';
 import Nosotros from './pages/Nosotros';
 import BlogDetalle from './pages/BlogDetalle';
+import Perfil from './pages/Perfil';
+import Pedidos from './pages/Pedidos';
 
 // Admin (placeholders)
 import AdminHome from './pages/admin/AdminHome';
@@ -40,6 +42,24 @@ export default function App() {
           <Route path="/blog" element={<Blog />} />
           <Route path="/nosotros" element={<Nosotros />} />
           <Route path="/blogs/:slug" element={<BlogDetalle />} />
+          
+          {/* 🔒 Rutas protegidas para usuarios autenticados */}
+          <Route 
+            path="/perfil" 
+            element={
+              <ProtectedRoute>
+                <Perfil />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/pedidos" 
+            element={
+              <ProtectedRoute>
+                <Pedidos />
+              </ProtectedRoute>
+            } 
+          />
         </Route>
 
 

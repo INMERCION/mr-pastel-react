@@ -1,12 +1,21 @@
-import { useContext } from 'react';
-import { Table, Button, Form, InputGroup, Card, Image } from 'react-bootstrap';
+import { useContext, useState } from 'react';
+import { Table, Button, Form, InputGroup, Card, Image, Modal, Alert } from 'react-bootstrap';
 import { CartContext } from '../context/CartContext';
+import { useOrders } from '../context/OrderContext';
+import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { FaCheckCircle } from 'react-icons/fa';
 
 export default function Carrito() {
   const { items, updateItemQuantity, removeItem, clear } =
     useContext(CartContext);
+  const { createOrder } = useOrders();
+  const { user } = useAuth();
   const navigate = useNavigate();
+  
+  const [showModal, setShowModal] = useState(false);
+  const [orderCreated, setOrderCreated] = useState(null);
+  const [error, setError] = useState('');
 
   const total = items.reduce(
     (sum, item) => sum + item.precio * item.cantidad,
@@ -27,7 +36,28 @@ export default function Carrito() {
   };
 
   const handleCheckout = () => {
-    navigate("/");
+    // Verificar que el usuario esté logueado
+    if (!user) {
+      navigate('/login', { state: { from: '/carrito' } });
+      return;
+    }
+
+    try {
+      // Crear el pedido
+      const newOrder = createOrder(items, total);
+      setOrderCreated(newOrder);
+      setShowModal(true);
+      
+      // Limpiar el carrito después de crear el pedido
+      clear();
+    } catch (err) {
+      setError(err.message || 'Error al crear el pedido');
+    }
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    navigate('/pedidos');
   };
 
   if (!items.length) {
@@ -169,6 +199,40 @@ export default function Carrito() {
           </Button>
         </div>
       </div>
+
+      {/* Modal de confirmación */}
+      <Modal show={showModal} onHide={handleCloseModal} centered>
+        <Modal.Header closeButton className="border-0">
+          <Modal.Title className="text-success">
+            <FaCheckCircle className="me-2" />
+            ¡Pedido Creado!
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="text-center py-4">
+          {orderCreated && (
+            <>
+              <p className="mb-3">Tu pedido #{orderCreated.id} ha sido creado exitosamente.</p>
+              <p className="text-muted mb-0">Total: <strong className="text-danger">${orderCreated.total.toLocaleString('es-CL')}</strong></p>
+              <p className="text-muted">Estado: <strong>Procesando</strong></p>
+            </>
+          )}
+        </Modal.Body>
+        <Modal.Footer className="border-0 justify-content-center">
+          <Button variant="danger" onClick={handleCloseModal}>
+            Ver Mis Pedidos
+          </Button>
+          <Button variant="outline-secondary" onClick={() => { setShowModal(false); navigate('/'); }}>
+            Volver al Inicio
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* Alerta de error */}
+      {error && (
+        <Alert variant="danger" className="mt-3" dismissible onClose={() => setError('')}>
+          {error}
+        </Alert>
+      )}
     </div>
   );
 }

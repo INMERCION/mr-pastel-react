@@ -81,10 +81,17 @@ export default function Navbar() {
                 )}
                 <NavDropdown.Item
                     as={NavLink}
-                    to="/" 
+                    to="/perfil" 
                     onClick={handleNavClose}
                   >
-                    Perfil
+                    Mi Perfil
+                  </NavDropdown.Item>
+                <NavDropdown.Item
+                    as={NavLink}
+                    to="/pedidos" 
+                    onClick={handleNavClose}
+                  >
+                    Mis Pedidos
                   </NavDropdown.Item>
                   <NavDropdown.Divider />
                   <NavDropdown.Item onClick={handleSignOut}>

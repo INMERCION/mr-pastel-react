@@ -7,6 +7,7 @@ import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
 // 1. IMPORTAR EL NUEVO PROVIDER
 import { ProductsProvider } from './context/ProductsContext';
+import { OrderProvider } from './context/OrderContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -14,9 +15,11 @@ root.render(
     <AuthProvider>
       {/* 2. ENVOLVER CON PRODUCTS PROVIDER */}
       <ProductsProvider>
-        <CartProvider>
-          <App />
-        </CartProvider>
+        <OrderProvider>
+          <CartProvider>
+            <App />
+          </CartProvider>
+        </OrderProvider>
       </ProductsProvider>
     </AuthProvider>
   </React.StrictMode>
