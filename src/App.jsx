@@ -4,6 +4,7 @@ import Container from 'react-bootstrap/Container';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import AdminLayout from './components/admin/AdminLayout'
+import { MusicProvider } from './context/MusicContext';
 import Home from './pages/Home';
 import Productos from './pages/Productos';
 import ProductoDetalle from './pages/ProductoDetalle';
@@ -14,6 +15,8 @@ import Contacto from './pages/Contacto';
 import Blog from './pages/Blog';
 import Nosotros from './pages/Nosotros';
 import BlogDetalle from './pages/BlogDetalle';
+import Perfil from './pages/Perfil';
+import Pedidos from './pages/Pedidos';
 
 // Admin (placeholders)
 import AdminHome from './pages/admin/AdminHome';
@@ -26,7 +29,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 export default function App() {
   return (
     <BrowserRouter>
-      
+      <MusicProvider>
       <Routes>
         <Route element={<ClienteLayout />}>
           <Route path="/" element={<Home />} />
@@ -39,6 +42,24 @@ export default function App() {
           <Route path="/blog" element={<Blog />} />
           <Route path="/nosotros" element={<Nosotros />} />
           <Route path="/blogs/:slug" element={<BlogDetalle />} />
+          
+          {/* 🔒 Rutas protegidas para usuarios autenticados */}
+          <Route 
+            path="/perfil" 
+            element={
+              <ProtectedRoute>
+                <Perfil />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/pedidos" 
+            element={
+              <ProtectedRoute>
+                <Pedidos />
+              </ProtectedRoute>
+            } 
+          />
         </Route>
 
 
@@ -56,7 +77,8 @@ export default function App() {
             <Route path="usuarios" element={<UsuariosAdmin />} />
           </Route>
           
-        </Routes>
+      </Routes>
+      </MusicProvider>
     </BrowserRouter>
   );
 }

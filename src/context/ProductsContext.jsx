@@ -1,42 +1,101 @@
-import React, { createContext, useContext, useState } from 'react';
-// Importamos los datos mock que nos diste
-import initialProducts from '../data/products.js'; 
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
-// 1. Crear el Contexto
 const ProductsContext = createContext();
 
-// 2. Crear el Proveedor (Provider)
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080';
+
 export const ProductsProvider = ({ children }) => {
-  const [products, setProducts] = useState(initialProducts);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Función para agregar un nuevo producto (simulado)
-  const addProduct = (newProduct) => {
-    // Simulamos un ID nuevo (en una BD real, esto sería autoincremental)
-    const productWithId = { 
-      ...newProduct, 
-      id: products.length + 1 
-    };
-    setProducts([...products, productWithId]);
+  // Cargar productos al montar
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(`${API_URL}/api/productos`);
+      if (!response.ok) throw new Error("Error cargando productos");
+      const data = await response.json();
+      setProducts(data);
+    } catch (err) {
+      console.error("Error cargando productos:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Función para actualizar un producto (simulado)
-  const updateProduct = (updatedProduct) => {
-    setProducts(products.map(p => 
-      p.id === updatedProduct.id ? updatedProduct : p
-    ));
+  const addProduct = async (newProduct) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`${API_URL}/api/productos`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(newProduct)
+      });
+
+      if (!response.ok) throw new Error("Error al crear producto");
+
+      await fetchProducts();
+      return true;
+    } catch (err) {
+      console.error("Error creando producto:", err);
+      return false;
+    }
   };
 
-  // Función para eliminar un producto (simulado)
-  const deleteProduct = (productId) => {
-    setProducts(products.filter(p => p.id !== productId));
+  const updateProduct = async (updatedProduct) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`${API_URL}/api/productos/${updatedProduct.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(updatedProduct)
+      });
+
+      if (!response.ok) throw new Error("Error al actualizar producto");
+
+      await fetchProducts();
+      return true;
+    } catch (err) {
+      console.error("Error actualizando producto:", err);
+      return false;
+    }
   };
 
-  // Valor que compartirás a los componentes hijos
+  const deleteProduct = async (productId) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`${API_URL}/api/productos/${productId}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      if (!response.ok) throw new Error("Error al eliminar producto");
+
+      await fetchProducts();
+      return true;
+    } catch (err) {
+      console.error("Error eliminando producto:", err);
+      return false;
+    }
+  };
+
   const value = {
     products,
+    loading,
     addProduct,
     updateProduct,
-    deleteProduct
+    deleteProduct,
+    refreshProducts: fetchProducts
   };
 
   return (
@@ -46,7 +105,6 @@ export const ProductsProvider = ({ children }) => {
   );
 };
 
-// 3. Hook personalizado para consumir el contexto fácilmente
 export const useProducts = () => {
   const context = useContext(ProductsContext);
   if (!context) {
