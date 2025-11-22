@@ -2,15 +2,16 @@
 import React, { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button, Row, Col } from "react-bootstrap";
-import products from "../data/products";
 import ProductCard from "../components/ProductCard";
 import { CartContext } from "../context/CartContext";
+import { useProducts } from "../context/ProductsContext";
 import "../styles/home.css";
 import "../styles/productos.css";
 
 export default function Home() {
   const navigate = useNavigate();
   const { addItem } = useContext(CartContext);
+  const { products } = useProducts();
   const destacados = products.slice(0, 6);
 
   return (

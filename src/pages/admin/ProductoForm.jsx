@@ -9,8 +9,10 @@ function ProductoForm({ initialData, onSubmitForm, onCancel }) {
   
   const [formData, setFormData] = useState({
     nombre: '',
+    descripcion: '',
     categoria: 'Tortas',
     precio: 0,
+    stock: 0,
     imagen: ''
   });
 
@@ -20,13 +22,22 @@ function ProductoForm({ initialData, onSubmitForm, onCancel }) {
       setFormData({
         id: initialData.id,
         nombre: initialData.nombre || '',
+        descripcion: initialData.descripcion || '',
         categoria: initialData.categoria || 'Tortas',
         precio: initialData.precio || 0,
+        stock: initialData.stock || 0,
         imagen: initialData.imagen || ''
       });
     } else {
       // Modo crear (resetea el form)
-      setFormData({ nombre: '', categoria: 'Tortas', precio: 0, imagen: '' });
+      setFormData({ 
+        nombre: '', 
+        descripcion: '',
+        categoria: 'Tortas', 
+        precio: 0, 
+        stock: 0,
+        imagen: '' 
+      });
     }
   }, [initialData]);
 
@@ -37,8 +48,12 @@ function ProductoForm({ initialData, onSubmitForm, onCancel }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Convertimos el precio a número antes de enviar
-    onSubmitForm({ ...formData, precio: parseFloat(formData.precio) });
+    // Convertimos el precio a número y stock a entero antes de enviar
+    onSubmitForm({ 
+      ...formData, 
+      precio: parseFloat(formData.precio),
+      stock: parseInt(formData.stock)
+    });
   };
 
   return (
@@ -53,12 +68,30 @@ function ProductoForm({ initialData, onSubmitForm, onCancel }) {
               value={formData.nombre}
               onChange={handleChange}
               required
+              placeholder="Ej: Torta de Chocolate"
             />
           </Form.Group>
         </Col>
       </Row>
+
       <Row>
-        <Col md={6}>
+        <Col md={12}>
+          <Form.Group className="mb-3" controlId="formDescripcion">
+            <Form.Label>Descripción</Form.Label>
+            <Form.Control
+              as="textarea"
+              rows={3}
+              name="descripcion"
+              value={formData.descripcion}
+              onChange={handleChange}
+              placeholder="Describe el producto..."
+            />
+          </Form.Group>
+        </Col>
+      </Row>
+
+      <Row>
+        <Col md={12}>
           <Form.Group className="mb-3" controlId="formCategoria">
             <Form.Label>Categoría</Form.Label>
             <Form.Select
@@ -77,30 +110,46 @@ function ProductoForm({ initialData, onSubmitForm, onCancel }) {
             </Form.Select>
           </Form.Group>
         </Col>
+      </Row>
+
+      <Row>
         <Col md={6}>
           <Form.Group className="mb-3" controlId="formPrecio">
-            <Form.Label>Precio</Form.Label>
+            <Form.Label>Precio (CLP)</Form.Label>
             <Form.Control
               type="number"
               name="precio"
               value={formData.precio}
               onChange={handleChange}
               required
+              min="0"
+            />
+          </Form.Group>
+        </Col>
+        <Col md={6}>
+          <Form.Group className="mb-3" controlId="formStock">
+            <Form.Label>Stock</Form.Label>
+            <Form.Control
+              type="number"
+              name="stock"
+              value={formData.stock}
+              onChange={handleChange}
+              required
+              min="0"
             />
           </Form.Group>
         </Col>
       </Row>
       <Form.Group className="mb-3" controlId="formImagen">
-        <Form.Label>URL Imagen (ej: /images/torta-nueva.jpg)</Form.Label>
+        <Form.Label>URL Imagen</Form.Label>
         <Form.Control
           type="text"
           name="imagen"
           value={formData.imagen}
           onChange={handleChange}
-          placeholder="/images/nombre-archivo.jpg"
+          placeholder="/images/producto.jpg"
         />
-      </Form.Group>
-      
+      </Form.Group>      
       <div className="d-flex justify-content-end gap-2">
         <Button variant="secondary" onClick={onCancel}>
           Cancelar
