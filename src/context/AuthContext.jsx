@@ -119,6 +119,7 @@ export function AuthProvider({ children }) {
         nombre: newUser.name,
         email: newUser.email,
         rut: newUser.rut,
+        password: newUser.password, // ✅ Agregar contraseña
         rol: newUser.role === 'admin' ? 'ADMIN' : 'USUARIO'
       };
       
@@ -157,6 +158,11 @@ export function AuthProvider({ children }) {
         rut: updatedUser.rut,
         rol: updatedUser.role === 'admin' ? 'ADMIN' : 'USUARIO'
       };
+
+      // Solo incluir password si se proporcionó una nueva
+      if (updatedUser.password && updatedUser.password.trim() !== '') {
+        backendUser.password = updatedUser.password;
+      }
       
       const response = await fetch(`${API_URL}/api/usuarios/${updatedUser.id}`, {
         method: 'PUT',
