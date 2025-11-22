@@ -3,14 +3,14 @@ import React, { useContext, useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Row, Col, Button, Image } from "react-bootstrap";
 import { CartContext } from "../context/CartContext";
-import products from "../data/products";
+import { useProducts } from "../context/ProductsContext";
 import "../styles/detalle.css";
 
 export default function ProductoDetalle() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-
+  const { products } = useProducts();
   const { items, updateItemQuantity } = useContext(CartContext);
   const producto = products.find((p) => String(p.id) === String(id));
 
