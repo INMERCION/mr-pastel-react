@@ -1,109 +1,222 @@
 import { createContext, useState, useContext, useEffect } from "react";
-// 1. IMPORTAMOS LOS USUARIOS DEL ARCHIVO QUE NOS DISTE
-import { seedUsers } from '../data/seedUsers.js';
 
 const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
 
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080';
+
 export function AuthProvider({ children }) {
-  
-  // 2. Usamos seedUsers como estado inicial (en lugar de mockUsers)
-  const [users, setUsers] = useState(seedUsers); 
-  
-  const [user, setUser] = useState(null); // El usuario con sesión iniciada
+  const [users, setUsers] = useState([]); 
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Recuperar sesión persistida (rehidratación)
+  // Recuperar sesión desde localStorage
   useEffect(() => {
     try {
       const stored = localStorage.getItem("user");
       if (stored) {
-        setUser(JSON.parse(stored));
+        const userData = JSON.parse(stored);
+        setUser(userData);
+        // Verificar token válido
+        const token = localStorage.getItem("token");
+        if (!token) {
+          signOut();
+        }
       }
     } catch (err) {
-      console.error("Error rehidratando usuario desde localStorage:", err);
-      localStorage.removeItem("user");
-      setUser(null);
+      console.error("Error rehidratando usuario:", err);
+      signOut();
     } finally {
       setLoading(false);
     }
   }, []);
 
-  // 3. Modificamos signIn para que use la lista de estado 'users'
-  const signIn = async (email, password) => {
-    // Usamos 'users' (del estado) y 'password' (del mock)
-    const found = users.find((u) => u.email === email && u.password === password); 
-    
-    if (found) {
-      // No guardar la contraseña en localStorage por seguridad
-      const safeUser = {
-        id: found.id,
-        email: found.email,
-        role: found.role,
-        name: found.name,
-        rut: found.rut // Agregamos RUT
-      };
-      setUser(safeUser);
-      try {
-        localStorage.setItem("user", JSON.stringify(safeUser));
-      } catch (err) {
-        console.error("Error guardando usuario en localStorage:", err);
-      }
-      return safeUser;
+  // Cargar lista de usuarios (solo para admin)
+  useEffect(() => {
+    if (user?.role === 'admin') {
+      fetchUsers();
     }
-    return false;
+  }, [user]);
+
+  const fetchUsers = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`${API_URL}/api/usuarios`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (!response.ok) throw new Error("Error cargando usuarios");
+      const data = await response.json();
+      
+      // Mapear campos del backend al formato del frontend
+      const mappedUsers = data.map(user => ({
+        id: user.id,
+        rut: user.rut,
+        name: user.nombre,
+        email: user.email,
+        role: user.rol === 'ADMIN' ? 'admin' : 'user'
+      }));
+      
+      setUsers(mappedUsers);
+    } catch (err) {
+      console.error("Error cargando usuarios:", err);
+    }
   };
 
-  // Cerrar sesión
+  const signIn = async (email, password) => {
+    try {
+      const response = await fetch(`${API_URL}/api/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        console.error("Error en login:", error);
+        return false;
+      }
+
+      const data = await response.json();
+      
+      console.log('📥 Datos del login:', data); // DEBUG
+      
+      const safeUser = {
+        id: data.id,
+        email: data.email,
+        role: (data.rol === 'ADMIN' || data.role === 'admin') ? 'admin' : 'user',
+        name: data.nombre || data.name,
+        rut: data.rut
+      };
+      
+      console.log('✅ Usuario mapeado:', safeUser); // DEBUG
+      
+      setUser(safeUser);
+      localStorage.setItem("user", JSON.stringify(safeUser));
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("usuarioId", data.id);
+      
+      return safeUser;
+    } catch (err) {
+      console.error("Error en login:", err);
+      return false;
+    }
+  };
+
   const signOut = () => {
     setUser(null);
+    setUsers([]);
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    localStorage.removeItem("usuarioId");
+  };
+
+  const addUser = async (newUser) => {
     try {
-      localStorage.removeItem("user");
+      const token = localStorage.getItem("token");
+      
+      // Mapear campos del frontend al formato del backend
+      const backendUser = {
+        nombre: newUser.name,
+        email: newUser.email,
+        rut: newUser.rut,
+        password: newUser.password, // ✅ Agregar contraseña
+        rol: newUser.role === 'admin' ? 'ADMIN' : 'USUARIO'
+      };
+      
+      const response = await fetch(`${API_URL}/api/usuarios`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(backendUser)
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        alert(error.message || "Error al crear usuario");
+        return false;
+      }
+
+      await fetchUsers();
+      return true;
     } catch (err) {
-      console.error("Error removiendo usuario de localStorage:", err);
+      console.error("Error creando usuario:", err);
+      alert("Error al crear usuario");
+      return false;
+    }
+  };
+
+  const updateUser = async (updatedUser) => {
+    try {
+      const token = localStorage.getItem("token");
+      
+      // Mapear campos del frontend al formato del backend
+      const backendUser = {
+        nombre: updatedUser.name,
+        email: updatedUser.email,
+        rut: updatedUser.rut,
+        rol: updatedUser.role === 'admin' ? 'ADMIN' : 'USUARIO'
+      };
+
+      // Solo incluir password si se proporcionó una nueva
+      if (updatedUser.password && updatedUser.password.trim() !== '') {
+        backendUser.password = updatedUser.password;
+      }
+      
+      const response = await fetch(`${API_URL}/api/usuarios/${updatedUser.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(backendUser)
+      });
+
+      if (!response.ok) throw new Error("Error al actualizar usuario");
+
+      // Si es el usuario actual, actualizar localStorage
+      if (user.id === updatedUser.id) {
+        const newUserData = { ...user, ...updatedUser };
+        setUser(newUserData);
+        localStorage.setItem("user", JSON.stringify(newUserData));
+      }
+
+      await fetchUsers();
+      return true;
+    } catch (err) {
+      console.error("Error actualizando usuario:", err);
+      return false;
+    }
+  };
+
+  const deleteUser = async (userId) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`${API_URL}/api/usuarios/${userId}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      if (!response.ok) throw new Error("Error al eliminar usuario");
+
+      await fetchUsers();
+      return true;
+    } catch (err) {
+      console.error("Error eliminando usuario:", err);
+      return false;
     }
   };
 
   const isAdmin = user?.role === "admin";
 
-  // --- 4. NUEVAS FUNCIONES CRUD PARA EL ADMIN ---
-  
-  const addUser = (newUser) => {
-    // Validar que el email o RUT no existan (opcional pero recomendado)
-    const emailExists = users.some(u => u.email === newUser.email);
-    const rutExists = users.some(u => u.rut === newUser.rut);
-
-    if (emailExists || rutExists) {
-      alert("El email o RUT ya están registrados.");
-      return false; // No se pudo agregar
-    }
-
-    const userWithId = {
-      ...newUser,
-      id: users.length + 1 // Simulación de ID
-    };
-    setUsers([...users, userWithId]);
-    return true; // Éxito
-  };
-
-  const updateUser = (updatedUser) => {
-    setUsers(users.map(u => 
-      u.id === updatedUser.id ? { ...u, ...updatedUser } : u
-    ));
-  };
-
-  const deleteUser = (userId) => {
-    setUsers(users.filter(u => u.id !== userId));
-  };
-
-  // 5. EXPONEMOS LOS NUEVOS VALORES
   const value = {
     user,
     isAdmin,
     signIn,
     signOut,
     loading,
-    users, // La lista completa de usuarios
+    users,
     addUser,
     updateUser,
     deleteUser

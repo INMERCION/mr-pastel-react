@@ -52,31 +52,56 @@ export default function Registro() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
     setValidated(true);
 
     if (validateForm()) {
+      try {
+        // Llamar directamente a la API de registro
+        const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:8080'}/api/auth/registro`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            nombre: form.nombre,
+            email: form.email,
+            rut: form.rut,
+            password: form.password
+          })
+        });
 
-      const newUser = {
-        rut: form.rut,
-        name: form.nombre, 
-        email: form.email,
-        password: form.password,
-        role: 'user' 
-      };
+        if (!response.ok) {
+          const error = await response.json();
+          alert(error.message || 'Error al registrar usuario');
+          return;
+        }
 
-      const success = addUser(newUser);
-
-      if (success) {
+        const data = await response.json();
         
+        // Guardar sesión automáticamente después del registro
+        const safeUser = {
+          id: data.id,
+          email: data.email,
+          role: data.rol === 'ADMIN' ? 'admin' : 'user',
+          name: data.nombre,
+          rut: data.rut
+        };
+        
+        localStorage.setItem("user", JSON.stringify(safeUser));
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("usuarioId", data.id);
+
+        // Mostrar éxito
         setShowSuccess(true);
 
         setTimeout(() => {
-          nav('/login');
-          }, 3000); 
-      } else {
-        setValidated(false); 
+          nav('/');
+        }, 2000);
+
+      } catch (err) {
+        console.error('Error en registro:', err);
+        alert('Error al registrar usuario. Inténtalo nuevamente.');
+        setValidated(false);
       }
     }
   };
