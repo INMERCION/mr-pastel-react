@@ -4,11 +4,13 @@
 // ============================================
 
 import React, { useState, useEffect, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContextBackend';
 import { carritoAPI } from '../services/api';
 import '../styles/Carrito.css';
 
 const CarritoBackend = () => {
+  const navigate = useNavigate();
   const { token, user, isAuthenticated } = useContext(AuthContext);
   const [carrito, setCarrito] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -65,6 +67,18 @@ const CarritoBackend = () => {
     }
   };
 
+  const handleProcederPago = () => {
+    // Guardar información del pedido para el checkout
+    const pedidoInfo = {
+      amount: carrito.total,
+      description: `Pedido Mr. Pastel - ${carrito.items.length} productos`,
+      items: carrito.items
+    };
+    
+    localStorage.setItem('pedidoPago', JSON.stringify(pedidoInfo));
+    navigate('/pago');
+  };
+
   if (!isAuthenticated) {
     return <div className="message">Debes iniciar sesión para ver tu carrito</div>;
   }
@@ -116,8 +130,10 @@ const CarritoBackend = () => {
       </div>
 
       <div className="carrito-resumen">
-        <h3>Total: ${carrito.total}</h3>
-        <button className="btn-checkout">Proceder al Pago</button>
+        <h3>Total: ${carrito.total?.toLocaleString('es-CL')}</h3>
+        <button className="btn-checkout" onClick={handleProcederPago}>
+          Proceder al Pago con Stripe
+        </button>
         <button className="btn-vaciar" onClick={handleVaciarCarrito}>
           Vaciar Carrito
         </button>

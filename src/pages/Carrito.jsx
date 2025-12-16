@@ -46,10 +46,22 @@ export default function Carrito() {
       // Crear el pedido
       const newOrder = createOrder(items, total);
       setOrderCreated(newOrder);
-      setShowModal(true);
       
-      // Limpiar el carrito después de crear el pedido
+      // Guardar información para el pago con Stripe
+      const pedidoInfo = {
+        pedidoId: newOrder.id,
+        amount: total,
+        description: `Pedido #${newOrder.id} - ${items.length} productos`,
+        items: items
+      };
+      
+      localStorage.setItem('pedidoPago', JSON.stringify(pedidoInfo));
+      
+      // Limpiar el carrito
       clear();
+      
+      // Redirigir a la página de pago con Stripe
+      navigate('/pago');
     } catch (err) {
       setError(err.message || 'Error al crear el pedido');
     }
@@ -194,8 +206,10 @@ export default function Carrito() {
             variant="primary"
             onClick={handleCheckout}
             disabled={!items.length}
+            className="d-flex align-items-center justify-content-center gap-2"
           >
-            Continuar Compra
+            <span>💳</span>
+            Proceder al Pago
           </Button>
         </div>
       </div>
