@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import '../styles/PagoExitoso.css';
 
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080';
+
 export default function PagoExitoso() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -29,7 +31,7 @@ export default function PagoExitoso() {
   const verifyPayment = async (paymentIntentId) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/api/pagos/payment-intent/${paymentIntentId}`
+        `${API_URL}/api/pagos/payment-intent/${paymentIntentId}`
       );
       
       if (response.ok) {

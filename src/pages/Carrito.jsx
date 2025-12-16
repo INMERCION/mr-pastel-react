@@ -44,7 +44,7 @@ export default function Carrito() {
 
     try {
       // Crear el pedido
-      const newOrder = createOrder(items, total);
+      const newOrder =createOrder(items, total);
       setOrderCreated(newOrder);
       
       // Guardar información para el pago con Stripe

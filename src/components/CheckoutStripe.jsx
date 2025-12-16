@@ -8,6 +8,9 @@ import {
 } from '@stripe/react-stripe-js';
 import '../styles/CheckoutStripe.css';
 
+// Configuración de API
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080';
+
 // Inicializar Stripe con tu publishable key (pk_test_)
 const stripePromise = loadStripe('pk_test_51SezRh2cLwGPBbZUf4FHTBaPLAOWY665GY704ij40g63YITJ7MselCM2HWkdcrUSPNaBdkaEbjOWSwif7Q4FFOdR00Q0ushAYz');
 
@@ -86,7 +89,7 @@ export default function CheckoutStripe({ amount, pedidoId, description, onSucces
     // Crear el PaymentIntent cuando se monta el componente
     const createPaymentIntent = async () => {
       try {
-        const response = await fetch('http://localhost:8080/api/pagos/create-payment-intent', {
+        const response = await fetch(`${API_URL}/api/pagos/create-payment-intent`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
