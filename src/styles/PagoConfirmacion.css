@@ -1,0 +1,52 @@
+.pago-container {
+  min-height: 80vh;
+  padding: 2rem 1rem;
+  background: linear-gradient(135deg, #ffeef5 0%, #fff5f8 100%);
+}
+
+.error-message {
+  max-width: 500px;
+  margin: 4rem auto;
+  text-align: center;
+  padding: 2rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.error-message h2 {
+  color: #dc3545;
+  margin-bottom: 1.5rem;
+}
+
+.pago-actions {
+  max-width: 500px;
+  margin: 1rem auto;
+  text-align: center;
+}
+
+.btn-volver,
+.btn-cancelar {
+  padding: 0.8rem 2rem;
+  background: white;
+  color: #666;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-volver:hover,
+.btn-cancelar:hover {
+  background: #f8f9fa;
+  border-color: #ff6b9d;
+  color: #ff6b9d;
+}
+
+@media (max-width: 768px) {
+  .pago-container {
+    padding: 1rem;
+  }
+}

@@ -17,6 +17,8 @@ import Nosotros from './pages/Nosotros';
 import BlogDetalle from './pages/BlogDetalle';
 import Perfil from './pages/Perfil';
 import Pedidos from './pages/Pedidos';
+import PagoConfirmacion from './pages/PagoConfirmacion';
+import PagoExitoso from './pages/PagoExitoso';
 
 // Admin (placeholders)
 import AdminHome from './pages/admin/AdminHome';
@@ -60,6 +62,15 @@ export default function App() {
               </ProtectedRoute>
             } 
           />
+          <Route 
+            path="/pago" 
+            element={
+              <ProtectedRoute>
+                <PagoConfirmacion />
+              </ProtectedRoute>
+            } 
+          />
+          <Route path="/pago-confirmado" element={<PagoExitoso />} />
         </Route>
 
 
